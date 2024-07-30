@@ -37,7 +37,7 @@ async def warn_user(message: types.Message):
             )
         )
         await message.reply(
-            f"User <b>{user.full_name}</b> has been banned forever due to multiple warnings.",
+            f"User <b>{user.full_name}</b> has been muted forever due to multiple warnings.",
             reply_markup=keyboard,
         )
         reset_warning_count(chat_id, user.id)

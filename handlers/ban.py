@@ -26,8 +26,7 @@ async def ban_user(message: types.Message):
         )
     )
     await message.reply(
-        f"User <b>{user.full_name}</b> has been banned for 1 day.",
-        reply_markup=keyboard,
+        f"User <b>{user.full_name}</b> has been banned forever.", reply_markup=keyboard
     )
 
 

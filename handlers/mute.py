@@ -20,8 +20,7 @@ async def mute_user(message: types.Message):
         return
 
     user = message.reply_to_message.from_user
-    mute_duration = timedelta(hours=1)
-    until_date = message.date + mute_duration
+    until_date = message.date + timedelta(hours=1)
     await message.chat.restrict(
         user_id=user.id,
         permissions=types.ChatPermissions(can_send_messages=False),
