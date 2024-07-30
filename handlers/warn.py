@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import timedelta
 from database.models import get_warning_count, set_warning_count, reset_warning_count
 from utils.admin import is_admin
-from .callbacks import mute_cb, ban_cb
+from .callbacks import mute_cb
 
 
 async def warn_user(message: types.Message):
@@ -27,22 +27,23 @@ async def warn_user(message: types.Message):
     set_warning_count(chat_id, user.id, warning_count)
 
     if warning_count >= 5:
-        ban_duration = timedelta(days=1)
-        until_date = message.date + ban_duration
-        await message.chat.kick(user_id=user.id, until_date=until_date)
+        await message.chat.restrict(
+            user_id=user.id, permissions=types.ChatPermissions(can_send_messages=False)
+        )
         keyboard = InlineKeyboardMarkup().add(
             InlineKeyboardButton(
-                "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
+                "Cancel Ban",
+                callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
         await message.reply(
-            f"User <b>{user.full_name}</b> has been banned for 1 day due to multiple warnings.",
+            f"User <b>{user.full_name}</b> has been banned forever due to multiple warnings.",
             reply_markup=keyboard,
         )
         reset_warning_count(chat_id, user.id)
+
     elif warning_count >= 3:
-        mute_duration = timedelta(hours=1)
-        until_date = message.date + mute_duration
+        until_date = message.date + timedelta(hours=1)
         await message.chat.restrict(
             user_id=user.id,
             permissions=types.ChatPermissions(can_send_messages=False),
@@ -58,6 +59,7 @@ async def warn_user(message: types.Message):
             f"User <b>{user.full_name}</b> has been muted for 1 hour. Total warnings: {warning_count}/5",
             reply_markup=keyboard,
         )
+
     else:
         await message.reply(
             f"User <b>{user.full_name}</b> has been warned. Total warnings: {warning_count}/3"
