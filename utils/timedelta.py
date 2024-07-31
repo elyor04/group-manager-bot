@@ -3,9 +3,7 @@ from datetime import timedelta
 
 
 def parse_timedelta(time_str):
-    time_pattern = re.compile(r"(\d+)([dhm])")
-    matches = time_pattern.findall(time_str)
-
+    matches = re.findall(r"(\d+)([dhm])", time_str)
     if not matches:
         return None
 
