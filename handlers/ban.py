@@ -34,10 +34,11 @@ async def ban_user(message: types.Message):
                 "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
             )
         )
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned for {ban_duration}',
             reply_markup=keyboard,
         )
+
     else:
         await message.chat.kick(user_id=user.id)
         keyboard = InlineKeyboardMarkup().add(
@@ -45,10 +46,12 @@ async def ban_user(message: types.Message):
                 "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
             )
         )
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.',
             reply_markup=keyboard,
         )
+
+    await message.delete()
 
 
 def register_ban_handlers(dp: Dispatcher):

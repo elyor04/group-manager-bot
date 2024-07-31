@@ -35,16 +35,18 @@ async def warn_user(message: types.Message):
                 callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to warnings.',
             reply_markup=keyboard,
         )
         reset_warning_count(chat_id, user.id)
 
     else:
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nTotal warnings: {warning_count}/5'
         )
+
+    await message.delete()
 
 
 def register_warn_handlers(dp: Dispatcher):

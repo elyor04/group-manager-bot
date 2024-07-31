@@ -36,7 +36,7 @@ async def mute_user(message: types.Message):
                 callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted for {mute_duration}',
             reply_markup=keyboard,
         )
@@ -52,10 +52,12 @@ async def mute_user(message: types.Message):
                 callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
-        await message.reply(
+        await message.reply_to_message.reply(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.',
             reply_markup=keyboard,
         )
+
+    await message.delete()
 
 
 def register_mute_handlers(dp: Dispatcher):
