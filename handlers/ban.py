@@ -2,6 +2,7 @@ from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils.admin import is_admin
+from utils.timedelta import parse_timedelta
 from .callbacks import ban_cb
 
 
@@ -19,16 +20,35 @@ async def ban_user(message: types.Message):
         return
 
     user = message.reply_to_message.from_user
-    await message.chat.kick(user_id=user.id)
-    keyboard = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(
-            "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
+    ban_duration = parse_timedelta(message.text)
+
+    if ban_duration:
+        until_date = message.date + ban_duration
+
+        await message.chat.kick(
+            user_id=user.id,
+            until_date=until_date,
         )
-    )
-    await message.reply(
-        f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been banned forever.',
-        reply_markup=keyboard,
-    )
+        keyboard = InlineKeyboardMarkup().add(
+            InlineKeyboardButton(
+                "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
+            )
+        )
+        await message.reply(
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned\nuntill {until_date}',
+            reply_markup=keyboard,
+        )
+    else:
+        await message.chat.kick(user_id=user.id)
+        keyboard = InlineKeyboardMarkup().add(
+            InlineKeyboardButton(
+                "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
+            )
+        )
+        await message.reply(
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.',
+            reply_markup=keyboard,
+        )
 
 
 def register_ban_handlers(dp: Dispatcher):
