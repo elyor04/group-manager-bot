@@ -1,7 +1,7 @@
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from utils.admin import is_admin
+from utils.chatmember import is_admin, is_muted, is_banned
 from utils.timedelta import parse_timedelta, get_strtime
 from .callbacks import mute_cb
 
@@ -17,6 +17,14 @@ async def mute_user(message: types.Message):
 
     if await is_admin(message.chat, message.reply_to_message.from_user):
         await message.reply("You cannot mute an admin.")
+        return
+    
+    if await is_muted(message.chat, message.reply_to_message.from_user):
+        await message.reply("User is already muted.")
+        return
+
+    if await is_banned(message.chat, message.reply_to_message.from_user):
+        await message.reply("User is already banned.")
         return
 
     user = message.reply_to_message.from_user

@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_warning_count, set_warning_count, reset_warning_count
-from utils.admin import is_admin
+from utils.chatmember import is_admin, is_muted, is_banned
 from .callbacks import mute_cb
 
 
@@ -17,6 +17,14 @@ async def warn_user(message: types.Message):
 
     if await is_admin(message.chat, message.reply_to_message.from_user):
         await message.reply("You cannot warn an admin.")
+        return
+
+    if await is_muted(message.chat, message.reply_to_message.from_user):
+        await message.reply("User is already muted.")
+        return
+
+    if await is_banned(message.chat, message.reply_to_message.from_user):
+        await message.reply("User is already banned.")
         return
 
     user = message.reply_to_message.from_user

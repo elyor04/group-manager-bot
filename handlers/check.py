@@ -3,7 +3,7 @@ from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_warning_count, set_warning_count, reset_warning_count
-from utils.admin import is_admin
+from utils.chatmember import is_admin
 from .callbacks import mute_cb
 
 with open("data/swearing-words.txt", "rt") as _f:
