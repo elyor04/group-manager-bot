@@ -23,7 +23,6 @@ async def check_messages(message: types.Message):
         if word in text:
             warning_count += 1
             set_warning_count(chat_id, user.id, warning_count)
-            await message.answer(word)
 
             if warning_count >= 3:
                 await message.chat.restrict(
