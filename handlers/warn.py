@@ -25,7 +25,7 @@ async def warn_user(message: types.Message):
     warning_count += 1
     set_warning_count(chat_id, user.id, warning_count)
 
-    if warning_count >= 3:
+    if warning_count >= 5:
         await message.chat.restrict(
             user_id=user.id, permissions=types.ChatPermissions(can_send_messages=False)
         )
@@ -43,7 +43,7 @@ async def warn_user(message: types.Message):
 
     else:
         await message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nTotal warnings: {warning_count}/3'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nTotal warnings: {warning_count}/5'
         )
 
 

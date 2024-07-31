@@ -24,7 +24,7 @@ async def check_messages(message: types.Message):
             warning_count += 1
             set_warning_count(chat_id, user.id, warning_count)
 
-            if warning_count >= 3:
+            if warning_count >= 5:
                 await message.chat.restrict(
                     user_id=user.id,
                     permissions=types.ChatPermissions(can_send_messages=False),
@@ -43,7 +43,7 @@ async def check_messages(message: types.Message):
 
             else:
                 await message.answer(
-                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nTotal warnings: {warning_count}/3'
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nTotal warnings: {warning_count}/5'
                 )
 
             await message.delete()
