@@ -20,7 +20,7 @@ async def check_messages(message: types.Message):
     warning_count = get_warning_count(chat_id, user.id)
 
     for word in swearing_words:
-        if word in text:
+        if re.search(r"\b" + re.escape(word) + r"\b", text):
             warning_count += 1
             set_warning_count(chat_id, user.id, warning_count)
 
