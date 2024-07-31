@@ -32,7 +32,7 @@ async def warn_user(message: types.Message):
         )
         keyboard = InlineKeyboardMarkup().add(
             InlineKeyboardButton(
-                "Cancel Ban",
+                "Cancel Mute",
                 callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
