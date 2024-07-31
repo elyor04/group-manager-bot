@@ -1,7 +1,6 @@
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from datetime import timedelta
 from database.models import get_warning_count, set_warning_count, reset_warning_count
 from utils.admin import is_admin
 from .callbacks import mute_cb
@@ -26,7 +25,7 @@ async def warn_user(message: types.Message):
     warning_count += 1
     set_warning_count(chat_id, user.id, warning_count)
 
-    if warning_count >= 5:
+    if warning_count >= 3:
         await message.chat.restrict(
             user_id=user.id, permissions=types.ChatPermissions(can_send_messages=False)
         )
@@ -37,32 +36,14 @@ async def warn_user(message: types.Message):
             )
         )
         await message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted forever due to multiple warnings.',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to warnings.',
             reply_markup=keyboard,
         )
         reset_warning_count(chat_id, user.id)
 
-    elif warning_count >= 3:
-        until_date = message.date + timedelta(hours=1)
-        await message.chat.restrict(
-            user_id=user.id,
-            permissions=types.ChatPermissions(can_send_messages=False),
-            until_date=until_date,
-        )
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Mute",
-                callback_data=mute_cb.new(user_id=user.id, action="cancel"),
-            )
-        )
-        await message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted for 1 hour. Total warnings: {warning_count}/5',
-            reply_markup=keyboard,
-        )
-
     else:
         await message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned. Total warnings: {warning_count}/3'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nTotal warnings: {warning_count}/3'
         )
 
 

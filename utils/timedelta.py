@@ -3,20 +3,20 @@ from datetime import timedelta
 
 
 def parse_timedelta(time_str):
-    pattern = r"(\d+)([mhd])"
-    match = re.search(pattern, time_str)
+    time_pattern = re.compile(r"(\d+)([dhm])")
+    matches = time_pattern.findall(time_str)
 
-    if not match:
+    if not matches:
         return None
 
-    value, unit = match.groups()
-    value = int(value)
+    delta = timedelta()
+    for value, unit in matches:
+        value = int(value)
+        if unit == "d":
+            delta += timedelta(days=value)
+        elif unit == "h":
+            delta += timedelta(hours=value)
+        elif unit == "m":
+            delta += timedelta(minutes=value)
 
-    if unit == "m":
-        return timedelta(minutes=value)
-    elif unit == "h":
-        return timedelta(hours=value)
-    elif unit == "d":
-        return timedelta(days=value)
-    else:
-        return None
+    return delta
