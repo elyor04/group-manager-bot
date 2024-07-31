@@ -18,3 +18,20 @@ def parse_timedelta(time_str):
             delta += timedelta(minutes=value)
 
     return delta
+
+
+def get_strtime(delta: timedelta):
+    str_time = ""
+
+    days = delta.days
+    hours = delta.seconds // 3600
+    minutes = (delta.seconds % 3600) // 60
+
+    if days:
+        str_time += f"{days} days "
+    if hours:
+        str_time += f"{hours} hours "
+    if minutes:
+        str_time += f"{minutes} minutes "
+
+    return str_time.strip()

@@ -2,7 +2,7 @@ from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils.admin import is_admin
-from utils.timedelta import parse_timedelta
+from utils.timedelta import parse_timedelta, get_strtime
 from .callbacks import mute_cb
 
 
@@ -37,7 +37,7 @@ async def mute_user(message: types.Message):
             )
         )
         await message.reply_to_message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted for {mute_duration}',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\n{get_strtime(mute_duration)}',
             reply_markup=keyboard,
         )
 
