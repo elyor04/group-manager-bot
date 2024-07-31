@@ -32,7 +32,7 @@ async def mute_user(message: types.Message):
         )
     )
     await message.reply(
-        f"User <b>{user.full_name}</b> has been muted for 1 hour.",
+        f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been muted for 1 hour.',
         reply_markup=keyboard,
     )
 

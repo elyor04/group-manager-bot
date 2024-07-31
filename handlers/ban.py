@@ -26,7 +26,8 @@ async def ban_user(message: types.Message):
         )
     )
     await message.reply(
-        f"User <b>{user.full_name}</b> has been banned forever.", reply_markup=keyboard
+        f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been banned forever.',
+        reply_markup=keyboard,
     )
 
 

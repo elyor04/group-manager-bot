@@ -18,8 +18,7 @@ async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
         user_id=user_id,
         permissions=ChatPermissions(can_send_messages=True),
     )
-    await callback_query.answer("Mute canceled.")
-    await callback_query.message.delete()
+    await callback_query.message.edit_text("Mute has been canceled.")
 
 
 async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
@@ -29,8 +28,7 @@ async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
 
     user_id = int(callback_data["user_id"])
     await callback_query.message.chat.unban(user_id=user_id)
-    await callback_query.answer("Ban canceled.")
-    await callback_query.message.delete()
+    await callback_query.message.edit_text("Ban has been canceled.")
 
 
 def register_callback_handlers(dp: Dispatcher):

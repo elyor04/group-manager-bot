@@ -37,7 +37,7 @@ async def warn_user(message: types.Message):
             )
         )
         await message.reply(
-            f"User <b>{user.full_name}</b> has been muted forever due to multiple warnings.",
+            f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been muted forever due to multiple warnings.',
             reply_markup=keyboard,
         )
         reset_warning_count(chat_id, user.id)
@@ -56,13 +56,13 @@ async def warn_user(message: types.Message):
             )
         )
         await message.reply(
-            f"User <b>{user.full_name}</b> has been muted for 1 hour. Total warnings: {warning_count}/5",
+            f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been muted for 1 hour. Total warnings: {warning_count}/5',
             reply_markup=keyboard,
         )
 
     else:
         await message.reply(
-            f"User <b>{user.full_name}</b> has been warned. Total warnings: {warning_count}/3"
+            f'User <a href="tg://user?id={user.id}">{user.full_name}</a> has been warned. Total warnings: {warning_count}/3'
         )
 
 
