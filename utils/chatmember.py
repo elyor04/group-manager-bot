@@ -9,7 +9,8 @@ async def user_status(chat: types.Chat, user: types.User):
         return "banned"
 
     if member.status == ChatMemberStatus.RESTRICTED:
-        return "muted"
+        if not member.can_send_messages:
+            return "muted"
 
     if member.status == ChatMemberStatus.LEFT:
         return "left"

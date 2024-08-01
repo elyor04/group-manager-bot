@@ -17,25 +17,32 @@ async def warn_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    username = extract_username(message.text)
+    username = extract_username(message.get_args())
 
-    if (not message.reply_to_message) and (not username):
-        await message.reply("Please reply to the user you want to warn.")
+    if message.reply_to_message:
+        user = message.reply_to_message.from_user
+        message_sender = message.reply_to_message.reply
+
+    elif username:
+        user = await message.bot.get_chat(username)
+        message_sender = message.answer
+
+    else:
+        await message.reply("Please reply to a user or specify a username.")
         return
 
-    if await is_admin(message.chat, message.reply_to_message.from_user):
+    if await is_admin(message.chat, user):
         await message.reply("You cannot warn an admin.")
         return
 
-    if await is_muted(message.chat, message.reply_to_message.from_user):
+    if await is_muted(message.chat, user):
         await message.reply("User is already muted.")
         return
 
-    if await is_banned(message.chat, message.reply_to_message.from_user):
+    if await is_banned(message.chat, user):
         await message.reply("User is already banned.")
         return
 
-    user = message.reply_to_message.from_user
     chat_id = message.chat.id
     warning_count = get_warning_count(chat_id, user.id)
     warning_count += 1
@@ -51,7 +58,7 @@ async def warn_user(message: types.Message):
                 callback_data=mute_cb.new(user_id=user.id, action="cancel"),
             )
         )
-        await message.reply_to_message.reply(
+        await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to multiple warnings.',
             reply_markup=keyboard,
         )
@@ -61,7 +68,7 @@ async def warn_user(message: types.Message):
         set_muted_count(chat_id, user.id, muted_count + 1)
 
     else:
-        await message.reply_to_message.reply(
+        await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nCurrent warnings: {warning_count}/5'
         )
 

@@ -1,24 +1,31 @@
 from aiogram import Dispatcher
 from aiogram import types
+from database.models import get_warning_count, get_muted_count, get_banned_count
 from utils.chatmember import user_status
 from utils.username import extract_username
-from database.models import get_warning_count, get_muted_count, get_banned_count
 
 
 async def user_info(message: types.Message):
-    username = extract_username(message.text)
+    username = extract_username(message.get_args())
 
-    if (not message.reply_to_message) and (not username):
-        await message.reply("Please reply to the user you want to get info.")
+    if message.reply_to_message:
+        user = message.reply_to_message.from_user
+        message_sender = message.reply_to_message.reply
+
+    elif username:
+        user = await message.bot.get_chat(username)
+        message_sender = message.answer
+
+    else:
+        await message.reply("Please reply to a user or specify a username.")
         return
 
     chat = message.chat
-    user = message.reply_to_message.from_user
     status = await user_status(chat, user)
 
     info = f'Info about: <a href="tg://user?id={user.id}">{user.full_name}</a>\nCurrent status: {status.capitalize()}\nCurrent warnings: {get_warning_count(chat.id, user.id)}/5\nTotal muted: {get_muted_count(chat.id, user.id)}\nTotal banned: {get_banned_count(chat.id, user.id)}'
 
-    await message.answer(info)
+    await message_sender(info)
     await message.delete()
 
 

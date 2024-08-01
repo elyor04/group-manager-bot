@@ -9,20 +9,27 @@ async def unban_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    username = extract_username(message.text)
+    username = extract_username(message.get_args())
 
-    if (not message.reply_to_message) and (not username):
-        await message.reply("Please reply to the user you want to unban.")
+    if message.reply_to_message:
+        user = message.reply_to_message.from_user
+        message_sender = message.reply_to_message.reply
+
+    elif username:
+        user = await message.bot.get_chat(username)
+        message_sender = message.answer
+
+    else:
+        await message.reply("Please reply to a user or specify a username.")
         return
 
-    if not await is_banned(message.chat, message.reply_to_message.from_user):
+    if not await is_banned(message.chat, user):
         await message.reply("User is not banned.")
         return
 
-    user = message.reply_to_message.from_user
     await message.chat.unban(user_id=user.id)
 
-    await message.answer(
+    await message_sender(
         f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unbanned.'
     )
     await message.delete()
