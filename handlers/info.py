@@ -1,12 +1,15 @@
 from aiogram import Dispatcher
 from aiogram import types
 from utils.chatmember import user_status
+from utils.username import extract_username
 from database.models import get_warning_count, get_muted_count, get_banned_count
 
 
 async def user_info(message: types.Message):
-    if not message.reply_to_message:
-        await message.reply("Please reply to the user you want to mute.")
+    username = extract_username(message.text)
+
+    if (not message.reply_to_message) and (not username):
+        await message.reply("Please reply to the user you want to get info.")
         return
 
     chat = message.chat

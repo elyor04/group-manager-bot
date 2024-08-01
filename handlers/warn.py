@@ -8,6 +8,7 @@ from database.models import (
     set_muted_count,
 )
 from utils.chatmember import is_admin, is_muted, is_banned
+from utils.username import extract_username
 from .callbacks import mute_cb
 
 
@@ -16,7 +17,9 @@ async def warn_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    if not message.reply_to_message:
+    username = extract_username(message.text)
+
+    if (not message.reply_to_message) and (not username):
         await message.reply("Please reply to the user you want to warn.")
         return
 

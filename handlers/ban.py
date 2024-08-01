@@ -4,6 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_banned_count, set_banned_count
 from utils.chatmember import is_admin, is_banned
 from utils.timedelta import parse_timedelta, get_strtime
+from utils.username import extract_username
 from .callbacks import ban_cb
 
 
@@ -12,7 +13,9 @@ async def ban_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    if not message.reply_to_message:
+    username = extract_username(message.text)
+
+    if (not message.reply_to_message) and (not username):
         await message.reply("Please reply to the user you want to ban.")
         return
 
