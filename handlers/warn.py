@@ -59,7 +59,7 @@ async def warn_user(message: types.Message):
             )
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to multiple warnings.',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to multiple warns.',
             reply_markup=keyboard,
         )
         set_warning_count(chat_id, user.id, 0)
@@ -69,7 +69,7 @@ async def warn_user(message: types.Message):
 
     else:
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nCurrent warnings: {warning_count}/5'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nWarns: {warning_count}/5'
         )
 
     await message.delete()
