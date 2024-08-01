@@ -4,6 +4,16 @@ from database.models import get_warning_count, get_muted_count, get_banned_count
 from utils.chatmember import user_status
 from utils.username import extract_username
 
+info_template = """
+🆔 <b>ID</b>: {0}
+👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
+🌐 <b>Username</b>: @{2}
+👀 <b>Situation</b>: {3}
+❕ <b>Warns</b>: {4}/5
+🔇 <b>Muted</b>: {5}
+🚫 <b>Banned</b>: {6}
+"""
+
 
 async def user_info(message: types.Message):
     username = extract_username(message.get_args())
@@ -23,7 +33,15 @@ async def user_info(message: types.Message):
     chat = message.chat
     status = await user_status(chat, user)
 
-    info = f'Info about: <a href="tg://user?id={user.id}">{user.full_name}</a>\nCurrent status: {status.capitalize()}\nCurrent warnings: {get_warning_count(chat.id, user.id)}/5\nTotal muted: {get_muted_count(chat.id, user.id)}\nTotal banned: {get_banned_count(chat.id, user.id)}'
+    info = info_template.format(
+        user.id,
+        user.full_name,
+        user.username,
+        status.capitalize(),
+        get_warning_count(chat.id, user.id),
+        get_muted_count(chat.id, user.id),
+        get_banned_count(chat.id, user.id),
+    )
 
     await message_sender(info)
     await message.delete()

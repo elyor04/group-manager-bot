@@ -11,6 +11,8 @@ async def user_status(chat: types.Chat, user: types.User):
     if member.status == ChatMemberStatus.RESTRICTED:
         if not member.can_send_messages:
             return "muted"
+        else:
+            return "member"
 
     if member.status == ChatMemberStatus.LEFT:
         return "left"
@@ -24,7 +26,7 @@ async def user_status(chat: types.Chat, user: types.User):
     ]:
         return "admin"
 
-    return "member"
+    return "unknown"
 
 
 async def is_admin(chat: types.Chat, user: types.User):
