@@ -24,7 +24,7 @@ async def user_status(chat: types.Chat, user: types.User):
     ]:
         return "admin"
 
-    return "unknown"
+    return "member"
 
 
 async def is_admin(chat: types.Chat, user: types.User):
