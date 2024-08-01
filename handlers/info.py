@@ -18,7 +18,7 @@ async def user_info(message: types.Message):
 
     else:
         user = message.from_user
-        message_sender = message.reply
+        message_sender = message.answer
 
     chat = message.chat
     status = await user_status(chat, user)
