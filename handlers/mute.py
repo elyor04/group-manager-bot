@@ -40,6 +40,7 @@ async def mute_user(message: types.Message):
         return
 
     mute_duration = parse_timedelta(message.get_args())
+    print(message.get_args())
 
     if mute_duration:
         until_date = message.date + mute_duration
