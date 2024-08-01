@@ -2,7 +2,7 @@ import re
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from database.models import get_warning_count, set_warning_count, reset_warning_count
+from database.models import get_warning_count, set_warning_count
 from utils.chatmember import is_admin
 from .callbacks import mute_cb
 
@@ -39,11 +39,11 @@ async def check_messages(message: types.Message):
                     f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been muted due to warnings.',
                     reply_markup=keyboard,
                 )
-                reset_warning_count(chat_id, user.id)
+                set_warning_count(chat_id, user.id, 0)
 
             else:
                 await message.answer(
-                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nTotal warnings: {warning_count}/5'
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nCurrent warnings: {warning_count}/5'
                 )
 
             await message.delete()

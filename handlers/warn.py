@@ -1,7 +1,12 @@
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from database.models import get_warning_count, set_warning_count, reset_warning_count
+from database.models import (
+    get_warning_count,
+    set_warning_count,
+    get_muted_count,
+    set_muted_count,
+)
 from utils.chatmember import is_admin, is_muted, is_banned
 from .callbacks import mute_cb
 
@@ -44,14 +49,17 @@ async def warn_user(message: types.Message):
             )
         )
         await message.reply_to_message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to warnings.',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to multiple warnings.',
             reply_markup=keyboard,
         )
-        reset_warning_count(chat_id, user.id)
+        set_warning_count(chat_id, user.id, 0)
+
+        muted_count = get_muted_count(chat_id, user.id)
+        set_muted_count(chat_id, user.id, muted_count + 1)
 
     else:
         await message.reply_to_message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nTotal warnings: {warning_count}/5'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nCurrent warnings: {warning_count}/5'
         )
 
     await message.delete()

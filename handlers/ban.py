@@ -1,6 +1,7 @@
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from database.models import get_banned_count, set_banned_count
 from utils.chatmember import is_admin, is_banned
 from utils.timedelta import parse_timedelta, get_strtime
 from .callbacks import ban_cb
@@ -39,7 +40,7 @@ async def ban_user(message: types.Message):
             )
         )
         await message.reply_to_message.reply(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\n{get_strtime(ban_duration)}',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}',
             reply_markup=keyboard,
         )
 
@@ -54,6 +55,9 @@ async def ban_user(message: types.Message):
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.',
             reply_markup=keyboard,
         )
+
+    banned_count = get_banned_count(message.chat.id, user.id)
+    set_banned_count(message.chat.id, user.id, banned_count + 1)
 
     await message.delete()
 

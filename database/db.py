@@ -9,10 +9,12 @@ cursor = conn.cursor()
 def initialize_db():
     cursor.execute(
         """
-        CREATE TABLE IF NOT EXISTS user_warnings (
+        CREATE TABLE IF NOT EXISTS user_info (
             chat_id INTEGER,
             user_id INTEGER,
             warnings INTEGER,
+            muted INTEGER,
+            banned INTEGER,
             PRIMARY KEY (chat_id, user_id)
         )
         """
