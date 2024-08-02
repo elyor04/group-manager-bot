@@ -50,7 +50,6 @@ async def mute_user(message: types.Message):
 
         await message.chat.restrict(
             user_id=user.id,
-            permissions=types.ChatPermissions(can_send_messages=False),
             until_date=until_date,
         )
         keyboard = InlineKeyboardMarkup().add(

@@ -33,7 +33,7 @@ async def warn_user(message: types.Message):
     else:
         await message.reply("Please reply to a user or specify a username.")
         return
-    
+
     set_username(message.chat.id, user.id, user.username)
 
     if await is_admin(message.chat, user):
@@ -55,7 +55,7 @@ async def warn_user(message: types.Message):
 
     if warning_count >= 5:
         await message.chat.restrict(
-            user_id=user.id, permissions=types.ChatPermissions(can_send_messages=False)
+            user_id=user.id,
         )
         keyboard = InlineKeyboardMarkup().add(
             InlineKeyboardButton(

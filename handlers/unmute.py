@@ -32,9 +32,11 @@ async def unmute_user(message: types.Message):
         await message.reply("User is not muted.")
         return
 
+    chat = await message.bot.get_chat(message.chat.id)
+
     await message.chat.restrict(
         user_id=user.id,
-        permissions=message.chat.permissions,
+        permissions=chat.permissions,
     )
 
     await message_sender(

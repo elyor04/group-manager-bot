@@ -36,7 +36,6 @@ async def check_messages(message: types.Message):
             if warning_count >= 5:
                 await message.chat.restrict(
                     user_id=user.id,
-                    permissions=types.ChatPermissions(can_send_messages=False),
                 )
                 keyboard = InlineKeyboardMarkup().add(
                     InlineKeyboardButton(
