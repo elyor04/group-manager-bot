@@ -1,6 +1,5 @@
 from aiogram import Dispatcher
 from aiogram import types
-from aiogram.types import ChatPermissions
 from aiogram.utils.callback_data import CallbackData
 from database.models import set_username
 from utils.chatmember import is_admin, is_muted, is_banned
@@ -37,6 +36,12 @@ async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
 
 
 async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
+    set_username(
+        callback_query.message.chat.id,
+        callback_query.from_user.id,
+        callback_query.from_user.username,
+    )
+
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
