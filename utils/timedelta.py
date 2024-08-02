@@ -2,7 +2,7 @@ import re
 from datetime import timedelta
 
 
-def parse_timedelta(time_str):
+def parse_timedelta(time_str: str):
     matches = re.findall(r"(\d+)([dhm])", time_str)
     if not matches:
         return None
