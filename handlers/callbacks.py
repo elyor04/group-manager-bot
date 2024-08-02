@@ -1,7 +1,6 @@
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.utils.callback_data import CallbackData
-from database.models import set_username
 from utils.chatmember import is_admin, is_muted, is_banned
 
 mute_cb = CallbackData("mute", "user_id", "action")
@@ -9,18 +8,11 @@ ban_cb = CallbackData("ban", "user_id", "action")
 
 
 async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
-    set_username(
-        callback_query.message.chat.id,
-        callback_query.from_user.id,
-        callback_query.from_user.username,
-    )
-
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
 
     user = await callback_query.message.bot.get_chat(int(callback_data["user_id"]))
-    set_username(callback_query.message.chat.id, user.id, user.username)
 
     if not await is_muted(callback_query.message.chat, user):
         await callback_query.message.edit_text("User is not muted.")
@@ -36,18 +28,11 @@ async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
 
 
 async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
-    set_username(
-        callback_query.message.chat.id,
-        callback_query.from_user.id,
-        callback_query.from_user.username,
-    )
-
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
 
     user = await callback_query.message.bot.get_chat(int(callback_data["user_id"]))
-    set_username(callback_query.message.chat.id, user.id, user.username)
 
     if not await is_banned(callback_query.message.chat, user):
         await callback_query.message.edit_text("User is not banned.")

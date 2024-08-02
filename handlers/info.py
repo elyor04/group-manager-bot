@@ -1,13 +1,8 @@
 from aiogram import Dispatcher
 from aiogram import types
-from database.models import (
-    get_warning_count,
-    get_muted_count,
-    get_banned_count,
-    set_username,
-)
+from database.models import get_warning_count, get_muted_count, get_banned_count
 from utils.chatmember import user_status
-from utils.username import extract_username
+from utils.userid import extract_user_id
 
 info_template = """
 🆔 <b>ID</b>: {0}
@@ -21,22 +16,19 @@ info_template = """
 
 
 async def user_info(message: types.Message):
-    set_username(message.chat.id, message.from_user.id, message.from_user.username)
-    username = extract_username(message.get_args())
+    user_id = await extract_user_id(message.get_args())
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
         message_sender = message.reply_to_message.reply
 
-    elif username:
-        user = await message.bot.get_chat(username)
+    elif user_id:
+        user = await message.bot.get_chat(user_id)
         message_sender = message.answer
 
     else:
         user = message.from_user
         message_sender = message.answer
-
-    set_username(message.chat.id, user.id, user.username)
 
     chat = message.chat
     status = await user_status(chat, user)

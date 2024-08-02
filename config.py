@@ -5,4 +5,5 @@ load_dotenv()
 
 # Configuration settings
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-DB_PATH = os.environ.get("DB_PATH")
+API_ID = os.environ.get("API_ID")
+API_HASH = os.environ.get("API_HASH")
