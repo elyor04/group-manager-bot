@@ -2,6 +2,7 @@ from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import ChatPermissions
 from aiogram.utils.callback_data import CallbackData
+from database.models import set_username
 from utils.chatmember import is_admin, is_muted, is_banned
 
 mute_cb = CallbackData("mute", "user_id", "action")
@@ -9,11 +10,18 @@ ban_cb = CallbackData("ban", "user_id", "action")
 
 
 async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
+    set_username(
+        callback_query.message.chat.id,
+        callback_query.from_user.id,
+        callback_query.from_user.username,
+    )
+
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
 
     user = await callback_query.message.bot.get_chat(int(callback_data["user_id"]))
+    set_username(callback_query.message.chat.id, user.id, user.username)
 
     if not await is_muted(callback_query.message.chat, user):
         await callback_query.message.edit_text("User is not muted.")
@@ -21,7 +29,7 @@ async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
 
     await callback_query.message.chat.restrict(
         user_id=user.id,
-        permissions=ChatPermissions(can_send_messages=True),
+        permissions=callback_query.message.chat.permissions,
     )
     await callback_query.message.edit_text("Mute has been canceled.")
 
@@ -32,9 +40,10 @@ async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
         return
 
     user = callback_query.message.bot.get_chat(int(callback_data["user_id"]))
+    set_username(callback_query.message.chat.id, user.id, user.username)
 
-    if not await is_muted(callback_query.message.chat, user):
-        await callback_query.message.edit_text("User is not muted.")
+    if not await is_banned(callback_query.message.chat, user):
+        await callback_query.message.edit_text("User is not banned.")
         return
 
     await callback_query.message.chat.unban(user_id=user.id)

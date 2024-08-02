@@ -2,15 +2,24 @@ import re
 from aiogram import Dispatcher
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from database.models import get_warning_count, set_warning_count
+from database.models import get_warning_count, set_warning_count, set_username
+from database.utils import get_swearing_words
 from utils.chatmember import is_admin
 from .callbacks import mute_cb
 
-with open("data/swearing-words.txt", "rt") as _f:
-    swearing_words = _f.read().splitlines()
+swearing_words = get_swearing_words()
 
 
 async def check_messages(message: types.Message):
+    set_username(message.chat.id, message.from_user.id, message.from_user.username)
+
+    if message.reply_to_message:
+        set_username(
+            message.chat.id,
+            message.reply_to_message.from_user.id,
+            message.reply_to_message.from_user.username,
+        )
+
     if await is_admin(message.chat, message.from_user):
         return
 

@@ -12,6 +12,7 @@ def initialize_db():
         CREATE TABLE IF NOT EXISTS user_info (
             chat_id INTEGER,
             user_id INTEGER,
+            username VARCHAR(100),
             warnings INTEGER,
             muted INTEGER,
             banned INTEGER,
