@@ -12,7 +12,7 @@ from utils.username import extract_username
 info_template = """
 🆔 <b>ID</b>: {0}
 👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
-🌐 <b>Username</b>: @{2}
+🌐 <b>Username</b>: {2}
 👀 <b>Situation</b>: {3}
 ❕ <b>Warns</b>: {4}/5
 🔇 <b>Muted</b>: {5}
@@ -44,7 +44,7 @@ async def user_info(message: types.Message):
     info = info_template.format(
         user.id,
         user.full_name,
-        user.username,
+        f"@{user.username}" if user.username else "",
         status.capitalize(),
         get_warning_count(chat.id, user.id),
         get_muted_count(chat.id, user.id),
