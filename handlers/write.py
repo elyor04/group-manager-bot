@@ -10,6 +10,7 @@ async def write_by_user(message: types.Message):
 
     if message.reply_to_message:
         message_sender = message.reply_to_message.reply
+
     else:
         message_sender = message.answer
 
