@@ -37,14 +37,14 @@ async def check_messages(message: types.Message):
                     )
                 )
                 await message.answer(
-                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been muted due to multiple warns.',
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been muted due to multiple warns.',
                     reply_markup=keyboard,
                 )
                 set_warning_count(chat_id, user.id, 0)
 
             else:
                 await message.answer(
-                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nWarns: {warning_count}/5'
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been warned.\nWarns: {warning_count}/5'
                 )
 
             break
