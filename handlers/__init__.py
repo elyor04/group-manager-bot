@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from .start import register_start_handlers
 from .warn import register_warn_handlers
 from .mute import register_mute_handlers
 from .ban import register_ban_handlers
@@ -11,6 +12,7 @@ from .check import register_check_handlers
 
 
 def register_handlers(dp: Dispatcher):
+    register_start_handlers(dp)
     register_warn_handlers(dp)
     register_mute_handlers(dp)
     register_ban_handlers(dp)
