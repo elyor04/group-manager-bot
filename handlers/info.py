@@ -1,5 +1,4 @@
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 from database.models import get_warning_count, get_muted_count, get_banned_count
 from utils.chatmember import user_status
 from utils.userid import extract_user_id

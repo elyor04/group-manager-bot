@@ -1,5 +1,4 @@
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 from aiogram.utils.callback_data import CallbackData
 from utils.chatmember import is_admin, is_muted, is_banned
 

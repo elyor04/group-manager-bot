@@ -1,5 +1,4 @@
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_muted_count, set_muted_count
 from utils.chatmember import is_admin, is_muted, is_banned

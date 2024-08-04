@@ -1,5 +1,4 @@
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 
 allowed_users = {
     "-1002116123455": [7084938423],

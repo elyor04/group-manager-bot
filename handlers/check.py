@@ -1,6 +1,5 @@
 import re
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_warning_count, set_warning_count
 from database.utils import get_swearing_words

@@ -1,5 +1,4 @@
-from aiogram import Dispatcher
-from aiogram import types
+from aiogram import Dispatcher, types
 from utils.chatmember import is_admin, is_muted
 from utils.userid import extract_user_id
 
