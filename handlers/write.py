@@ -16,6 +16,8 @@ async def write_by_bot(message: types.Message):
     await message.delete()
     await message_sender(message.get_args())
 
+    await message.answer(str(message.chat.id))
+
 
 def register_write_handlers(dp: Dispatcher):
     dp.register_message_handler(
