@@ -27,12 +27,12 @@ async def unban_user(message: types.Message):
         await message.reply("User is not banned.")
         return
 
+    await message.delete()
     await message.chat.unban(user_id=user.id)
 
     await message_sender(
         f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unbanned.'
     )
-    await message.delete()
 
 
 def register_unban_handlers(dp: Dispatcher):

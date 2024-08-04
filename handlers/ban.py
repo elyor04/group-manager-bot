@@ -35,6 +35,7 @@ async def ban_user(message: types.Message):
         await message.reply("User is already banned.")
         return
 
+    await message.delete()
     ban_duration = parse_timedelta(message.get_args())
 
     if ban_duration:
@@ -68,8 +69,6 @@ async def ban_user(message: types.Message):
 
     banned_count = get_banned_count(message.chat.id, user.id)
     set_banned_count(message.chat.id, user.id, banned_count + 1)
-
-    await message.delete()
 
 
 def register_ban_handlers(dp: Dispatcher):

@@ -43,6 +43,8 @@ async def warn_user(message: types.Message):
         await message.reply("User is already banned.")
         return
 
+    await message.delete()
+
     chat_id = message.chat.id
     warning_count = get_warning_count(chat_id, user.id)
     warning_count += 1
@@ -71,8 +73,6 @@ async def warn_user(message: types.Message):
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nWarns: {warning_count}/5'
         )
-
-    await message.delete()
 
 
 def register_warn_handlers(dp: Dispatcher):

@@ -30,6 +30,8 @@ async def user_info(message: types.Message):
         user = message.from_user
         message_sender = message.answer
 
+    await message.delete()
+
     chat = message.chat
     status = await user_status(chat, user)
 
@@ -44,7 +46,6 @@ async def user_info(message: types.Message):
     )
 
     await message_sender(info)
-    await message.delete()
 
 
 def register_info_handlers(dp: Dispatcher):

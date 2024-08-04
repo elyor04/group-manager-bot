@@ -13,8 +13,8 @@ async def write_by_bot(message: types.Message):
     else:
         message_sender = message.answer
 
-    await message_sender(message.get_args())
     await message.delete()
+    await message_sender(message.get_args())
 
 
 def register_write_handlers(dp: Dispatcher):

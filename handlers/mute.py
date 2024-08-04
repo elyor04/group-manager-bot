@@ -39,6 +39,7 @@ async def mute_user(message: types.Message):
         await message.reply("User is already banned.")
         return
 
+    await message.delete()
     mute_duration = parse_timedelta(message.get_args())
 
     if mute_duration:
@@ -77,8 +78,6 @@ async def mute_user(message: types.Message):
 
     muted_count = get_muted_count(message.chat.id, user.id)
     set_muted_count(message.chat.id, user.id, muted_count + 1)
-
-    await message.delete()
 
 
 def register_mute_handlers(dp: Dispatcher):

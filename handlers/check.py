@@ -21,6 +21,8 @@ async def check_messages(message: types.Message):
 
     for word in swearing_words:
         if re.search(r"\b" + re.escape(word) + r"\b", text):
+            await message.delete()
+
             warning_count += 1
             set_warning_count(chat_id, user.id, warning_count)
 
@@ -45,15 +47,15 @@ async def check_messages(message: types.Message):
                     f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending swearing words.\nHe/she has been warned.\nWarns: {warning_count}/5'
                 )
 
-            await message.delete()
             break
 
     else:
         if re.search(r"http[s]?://\S+", text):
+            await message.delete()
+
             await message.answer(
                 f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
             )
-            await message.delete()
 
 
 def register_check_handlers(dp: Dispatcher):

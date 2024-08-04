@@ -27,6 +27,7 @@ async def unmute_user(message: types.Message):
         await message.reply("User is not muted.")
         return
 
+    await message.delete()
     chat = await message.bot.get_chat(message.chat.id)
 
     await message.chat.restrict(
@@ -37,7 +38,6 @@ async def unmute_user(message: types.Message):
     await message_sender(
         f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unmuted.'
     )
-    await message.delete()
 
 
 def register_unmute_handlers(dp: Dispatcher):
