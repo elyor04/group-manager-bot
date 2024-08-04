@@ -11,14 +11,10 @@ async def write_by_bot(message: types.Message):
     user_id = message.from_user.id
     chat_id = str(message.chat.id)
 
-    if user_id in allowed_users["all"]:
-        pass
-    elif user_id in allowed_users.get(chat_id, []):
-        pass
-    else:
-        return
-
-    if not message.get_args():
+    if (
+        (user_id not in allowed_users["all"])
+        and (user_id not in allowed_users.get(chat_id, []))
+    ) or (not message.get_args()):
         return
 
     if message.reply_to_message:
@@ -28,8 +24,6 @@ async def write_by_bot(message: types.Message):
 
     await message.delete()
     await message_sender(message.get_args())
-
-    await message.answer()
 
 
 def register_write_handlers(dp: Dispatcher):
