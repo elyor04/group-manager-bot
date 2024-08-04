@@ -1,11 +1,24 @@
 from aiogram import Dispatcher
 from aiogram import types
 
-allowed_users = [7084938423, 1398600688]
+allowed_users = {
+    "-1002116123455": [7084938423],
+    "all": [1398600688, 6840837015],
+}
 
 
 async def write_by_bot(message: types.Message):
-    if (message.from_user.id not in allowed_users) or (not message.get_args()):
+    user_id = message.from_user.id
+    chat_id = str(message.chat.id)
+
+    if user_id in allowed_users["all"]:
+        pass
+    elif user_id in allowed_users.get(chat_id, []):
+        pass
+    else:
+        return
+
+    if not message.get_args():
         return
 
     if message.reply_to_message:
@@ -16,7 +29,7 @@ async def write_by_bot(message: types.Message):
     await message.delete()
     await message_sender(message.get_args())
 
-    await message.answer(str(message.chat.id))
+    await message.answer()
 
 
 def register_write_handlers(dp: Dispatcher):
