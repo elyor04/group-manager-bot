@@ -8,6 +8,7 @@ from .unmute import register_unmute_handlers
 from .unban import register_unban_handlers
 from .info import register_info_handlers
 from .write import register_write_handlers
+from .delete import register_delete_handlers
 from .check import register_check_handlers
 
 
@@ -21,4 +22,5 @@ def register_handlers(dp: Dispatcher):
     register_unban_handlers(dp)
     register_info_handlers(dp)
     register_write_handlers(dp)
+    register_delete_handlers(dp)
     register_check_handlers(dp)
