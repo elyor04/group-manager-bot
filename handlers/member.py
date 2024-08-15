@@ -21,8 +21,10 @@ def register_member_handlers(dp: Dispatcher):
     dp.register_message_handler(
         on_member_joined,
         content_types=types.ContentType.NEW_CHAT_MEMBERS,
+        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
     dp.register_message_handler(
         on_member_left,
         content_types=types.ContentType.LEFT_CHAT_MEMBER,
+        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
