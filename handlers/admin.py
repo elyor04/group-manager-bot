@@ -3,9 +3,9 @@ from aiogram import Dispatcher, types
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣
 
-👥 <b>Group</b>: <a href="https://t.me/{0}">{1}</a>
+👥 <b>Group</b>: <a href="https://t.me/c/{0}">{1}</a>
 👱 <b>User</b>: <a href="tg://user?id={2}">{3}</a>
-🔗 <b>Message link</b>: <a href="https://t.me/{0}/{4}">here</a>
+🔗 <b>Message link</b>: <a href="https://t.me/c/{0}/{4}">here</a>
 
 💬 <b>Message</b> 💬
 
@@ -18,7 +18,7 @@ async def send_to_admins(message: types.Message):
     user = message.from_user
 
     message_send = message_template.format(
-        chat.username if chat.username else f"c/{str(chat.id)[4:]}",
+        str(chat.id)[4:],
         chat.title,
         user.id,
         user.full_name,
