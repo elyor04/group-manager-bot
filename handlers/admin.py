@@ -44,4 +44,5 @@ def register_admin_handlers(dp: Dispatcher):
         lambda message: (
             message.text.lower().startswith("@admin") if message.text else False
         ),
+        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
