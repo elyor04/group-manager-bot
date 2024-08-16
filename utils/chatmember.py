@@ -1,7 +1,10 @@
 from aiogram import types
 from aiogram.types import ChatMemberStatus
 
-allowed_users = [1398600688, 6840837015]
+allowed_users = {
+    "-1002116123455": [6373759004],
+    "all": [1398600688, 6840837015],
+}
 
 
 async def user_status(chat: types.Chat, user: types.User):
@@ -32,7 +35,14 @@ async def user_status(chat: types.Chat, user: types.User):
 
 
 async def is_admin(chat: types.Chat, user: types.User):
-    return (await user_status(chat, user) == "admin") or (user.id in allowed_users)
+    user_id = user.id
+    chat_id = str(chat.id)
+
+    return (
+        (await user_status(chat, user) == "admin")
+        or (user_id in allowed_users["all"])
+        or (user_id in allowed_users.get(chat_id, []))
+    )
 
 
 async def is_muted(chat: types.Chat, user: types.User):
