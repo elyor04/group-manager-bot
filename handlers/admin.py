@@ -41,7 +41,11 @@ async def send_to_admins(message: types.Message):
 def register_admin_handlers(dp: Dispatcher):
     dp.register_message_handler(
         send_to_admins,
-        lambda message: message.text.lower().startswith("@admin"),
+        _admin_mention_filter,
         content_types=types.ContentType.TEXT,
         chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
+
+
+def _admin_mention_filter(message: types.Message):
+    return message.text.lower().startswith("@admin")
