@@ -1,9 +1,8 @@
 from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_muted_count, set_muted_count
-from utils.chatmember import is_admin, is_muted, is_banned
-from utils.timedelta import parse_timedelta, get_strtime
-from utils.userid import extract_user_id
+from utils.chatMember import is_admin, is_muted, is_banned
+from utils.extractArgs import extract_args, get_strtime
 from .callbacks import mute_cb
 
 
@@ -12,14 +11,14 @@ async def mute_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    user_id = await extract_user_id(message.get_args())
+    args_dict = await extract_args(message.get_args())
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
         message_sender = message.reply_to_message.reply
 
-    elif user_id:
-        user = await message.bot.get_chat(user_id)
+    elif args_dict["user_id"]:
+        user = await message.bot.get_chat(args_dict["user_id"])
         message_sender = message.answer
 
     else:
@@ -39,7 +38,9 @@ async def mute_user(message: types.Message):
         return
 
     await message.delete()
-    mute_duration = parse_timedelta(message.get_args())
+
+    mute_duration = args_dict["timedelta"]
+    reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
     if mute_duration:
         until_date = message.date + mute_duration
@@ -55,7 +56,8 @@ async def mute_user(message: types.Message):
             )
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}'
+            + reason,
             reply_markup=keyboard,
         )
 
@@ -71,7 +73,8 @@ async def mute_user(message: types.Message):
             )
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.'
+            + reason,
             reply_markup=keyboard,
         )
 

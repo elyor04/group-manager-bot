@@ -6,8 +6,8 @@ from database.models import (
     get_muted_count,
     set_muted_count,
 )
-from utils.chatmember import is_admin, is_muted, is_banned
-from utils.userid import extract_user_id
+from utils.chatMember import is_admin, is_muted, is_banned
+from utils.extractArgs import extract_args
 from .callbacks import mute_cb
 
 
@@ -16,14 +16,14 @@ async def warn_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    user_id = await extract_user_id(message.get_args())
+    args_dict = await extract_args(message.get_args())
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
         message_sender = message.reply_to_message.reply
 
-    elif user_id:
-        user = await message.bot.get_chat(user_id)
+    elif args_dict["user_id"]:
+        user = await message.bot.get_chat(args_dict["user_id"])
         message_sender = message.answer
 
     else:
@@ -49,6 +49,8 @@ async def warn_user(message: types.Message):
     warning_count += 1
     set_warning_count(chat_id, user.id, warning_count)
 
+    reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
+
     if warning_count >= 5:
         await message.chat.restrict(
             user_id=user.id,
@@ -71,6 +73,7 @@ async def warn_user(message: types.Message):
     else:
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nWarns: {warning_count}/5'
+            + reason
         )
 
 

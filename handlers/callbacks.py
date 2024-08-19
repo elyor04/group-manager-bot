@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types
 from aiogram.utils.callback_data import CallbackData
-from utils.chatmember import is_admin, is_muted, is_banned
+from utils.chatMember import is_admin, is_muted, is_banned
 
 mute_cb = CallbackData("mute", "user_id", "action")
 ban_cb = CallbackData("ban", "user_id", "action")

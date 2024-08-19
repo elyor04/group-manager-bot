@@ -1,5 +1,5 @@
 from aiogram import Dispatcher, types
-from utils.chatmember import is_admin
+from utils.chatMember import is_admin
 
 
 async def delete_message(message: types.Message):

@@ -1,9 +1,8 @@
 from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_banned_count, set_banned_count
-from utils.chatmember import is_admin, is_banned
-from utils.timedelta import parse_timedelta, get_strtime
-from utils.userid import extract_user_id
+from utils.chatMember import is_admin, is_banned
+from utils.extractArgs import extract_args, get_strtime
 from .callbacks import ban_cb
 
 
@@ -12,14 +11,14 @@ async def ban_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    user_id = await extract_user_id(message.get_args())
+    args_dict = await extract_args(message.get_args())
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
         message_sender = message.reply_to_message.reply
 
-    elif user_id:
-        user = await message.bot.get_chat(user_id)
+    elif args_dict["user_id"]:
+        user = await message.bot.get_chat(args_dict["user_id"])
         message_sender = message.answer
 
     else:
@@ -35,7 +34,9 @@ async def ban_user(message: types.Message):
         return
 
     await message.delete()
-    ban_duration = parse_timedelta(message.get_args())
+
+    ban_duration = args_dict["timedelta"]
+    reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
     if ban_duration:
         until_date = message.date + ban_duration
@@ -50,7 +51,8 @@ async def ban_user(message: types.Message):
             )
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}'
+            + reason,
             reply_markup=keyboard,
         )
 
@@ -62,7 +64,8 @@ async def ban_user(message: types.Message):
             )
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.',
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.'
+            + reason,
             reply_markup=keyboard,
         )
 

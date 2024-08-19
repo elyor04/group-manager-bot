@@ -3,7 +3,7 @@ from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_warning_count, set_warning_count
 from database.utils import get_swearing_words
-from utils.chatmember import is_admin
+from utils.chatMember import is_admin
 from .callbacks import mute_cb
 
 swearing_words = get_swearing_words()
