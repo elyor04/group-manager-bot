@@ -47,7 +47,6 @@ async def warn_user(message: types.Message):
     chat_id = message.chat.id
     warning_count = get_warning_count(chat_id, user.id)
     warning_count += 1
-    set_warning_count(chat_id, user.id, warning_count)
 
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
@@ -75,6 +74,7 @@ async def warn_user(message: types.Message):
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nWarns: {warning_count}/5'
             + reason
         )
+        set_warning_count(chat_id, user.id, warning_count)
 
 
 def register_warn_handlers(dp: Dispatcher):
