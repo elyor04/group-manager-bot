@@ -60,7 +60,7 @@ async def warn_user(message: types.Message):
     if warning_count >= 5:
         await message.chat.restrict(user_id=user_id)
         mute_message = (
-            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been muted forever due to multiple warnings."
+            f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted forever due to multiple warnings.'
             + reason
         )
         set_warning_count(chat_id, user_id, 0)
@@ -71,14 +71,14 @@ async def warn_user(message: types.Message):
         )
         next_action = "forever" if warning_count == 4 else "1 day"
         mute_message = (
-            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been muted for {get_strtime(mute_duration)}.\n"
+            f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted for {get_strtime(mute_duration)}.\n'
             f"Next time will be muted {next_action}.\nWarns: {warning_count}/5" + reason
         )
         set_warning_count(chat_id, user_id, warning_count)
 
     else:
         mute_message = (
-            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been warned.\n"
+            f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been warned.\n'
             f"Warns: {warning_count}/3" + reason
         )
         set_warning_count(chat_id, user_id, warning_count)
