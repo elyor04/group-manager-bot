@@ -79,7 +79,7 @@ async def warn_user(message: types.Message):
     else:
         mute_message = (
             f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been warned.\n"
-            f"Warns: {warning_count}/5" + reason
+            f"Warns: {warning_count}/3" + reason
         )
         set_warning_count(chat_id, user_id, warning_count)
 
@@ -89,7 +89,6 @@ async def warn_user(message: types.Message):
             callback_data=mute_cb.new(user_id=user_id, action="cancel"),
         )
     )
-
     await message_sender(
         mute_message, reply_markup=keyboard if warning_count >= 3 else None
     )
