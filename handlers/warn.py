@@ -7,8 +7,14 @@ from database.models import (
     set_muted_count,
 )
 from utils.chatMember import is_admin, is_muted, is_banned
-from utils.extractArgs import extract_args
+from utils.extractArgs import extract_args, get_strtime
 from .callbacks import mute_cb
+from datetime import timedelta
+
+mute_durations = {
+    3: timedelta(hours=1),
+    4: timedelta(days=1),
+}
 
 
 async def warn_user(message: types.Message):
@@ -45,36 +51,52 @@ async def warn_user(message: types.Message):
     await message.delete()
 
     chat_id = message.chat.id
-    warning_count = get_warning_count(chat_id, user.id)
-    warning_count += 1
+    user_id = user.id
+    warning_count = get_warning_count(chat_id, user_id) + 1
 
+    mute_duration = mute_durations.get(warning_count)
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
     if warning_count >= 5:
-        await message.chat.restrict(
-            user_id=user.id,
-        )
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Mute",
-                callback_data=mute_cb.new(user_id=user.id, action="cancel"),
-            )
-        )
-        await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted due to multiple warns.',
-            reply_markup=keyboard,
-        )
-        set_warning_count(chat_id, user.id, 0)
-
-        muted_count = get_muted_count(chat_id, user.id)
-        set_muted_count(chat_id, user.id, muted_count + 1)
-
-    else:
-        await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been warned.\nWarns: {warning_count}/5'
+        await message.chat.restrict(user_id=user_id)
+        mute_message = (
+            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been muted forever due to multiple warnings."
             + reason
         )
-        set_warning_count(chat_id, user.id, warning_count)
+        set_warning_count(chat_id, user_id, 0)
+
+    elif mute_duration:
+        await message.chat.restrict(
+            user_id=user_id, until_date=message.date + mute_duration
+        )
+        next_action = "forever" if warning_count == 4 else "1 day"
+        mute_message = (
+            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been muted for {get_strtime(mute_duration)}.\n"
+            f"Next time will be muted {next_action}.\nWarns: {warning_count}/5" + reason
+        )
+        set_warning_count(chat_id, user_id, warning_count)
+
+    else:
+        mute_message = (
+            f"<a href='tg://user?id={user_id}'>{user.full_name}</a> has been warned.\n"
+            f"Warns: {warning_count}/5" + reason
+        )
+        set_warning_count(chat_id, user_id, warning_count)
+
+    keyboard = InlineKeyboardMarkup().add(
+        InlineKeyboardButton(
+            "Cancel Mute",
+            callback_data=mute_cb.new(user_id=user_id, action="cancel"),
+        )
+    )
+
+    await message_sender(
+        mute_message, reply_markup=keyboard if warning_count >= 3 else None
+    )
+
+    if warning_count >= 3:
+        muted_count = get_muted_count(chat_id, user_id) + 1
+        set_muted_count(chat_id, user_id, muted_count)
 
 
 def register_warn_handlers(dp: Dispatcher):

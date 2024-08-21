@@ -70,10 +70,10 @@ def get_strtime(delta: timedelta):
     minutes = (delta.seconds % 3600) // 60
 
     if days:
-        str_time += f"{days} days "
+        str_time += f"{days} day{'s' if days > 1 else ''} "
     if hours:
-        str_time += f"{hours} hours "
+        str_time += f"{hours} hour{'s' if hours > 1 else ''} "
     if minutes:
-        str_time += f"{minutes} minutes "
+        str_time += f"{minutes} minute{'s' if minutes > 1 else ''} "
 
     return str_time.strip()
