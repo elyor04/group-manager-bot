@@ -69,7 +69,7 @@ async def warn_user(message: types.Message):
         await message.chat.restrict(
             user_id=user_id, until_date=message.date + mute_duration
         )
-        next_action = "forever" if warning_count == 4 else "1 day"
+        next_action = "forever" if warning_count == 4 else "for 1 day"
         mute_message = (
             f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted for {get_strtime(mute_duration)}.\n'
             f"Next time will be muted {next_action}.\nWarns: {warning_count}/5" + reason

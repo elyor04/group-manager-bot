@@ -14,6 +14,6 @@ def start_bot():
     initialize_db()
     register_handlers(dp)
     try:
-        executor.start_polling(dp)
+        executor.start_polling(dp, skip_updates=True)
     finally:
         close_db()
