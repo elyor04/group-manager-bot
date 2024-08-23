@@ -10,7 +10,7 @@ info_template = """
 👀 <b>Situation</b>: {3}
 ❕ <b>Warns</b>: {4}/5
 🔇 <b>Muted</b>: {5}
-🚫 <b>Banned</b>: {6}
+🚷 <b>Banned</b>: {6}
 """
 
 
