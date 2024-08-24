@@ -28,8 +28,8 @@ async def warn_user(message: types.Message):
         user = message.reply_to_message.from_user
         message_sender = message.reply_to_message.reply
 
-    elif args_dict["user_id"]:
-        user = await message.bot.get_chat(args_dict["user_id"])
+    elif args_dict["user"]:
+        user = args_dict["user"]
         message_sender = message.answer
 
     else:

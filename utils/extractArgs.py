@@ -9,7 +9,7 @@ app = Client("my_bot", API_ID, API_HASH, bot_token=BOT_TOKEN, workdir="data")
 
 async def extract_args(args_text: str):
     data = {
-        "user_id": None,
+        "user": None,
         "timedelta": None,
         "reason": None,
     }
@@ -25,20 +25,27 @@ async def extract_args(args_text: str):
         user_id_match = re.search(r"\b\d{10}\b", args_text)
         timedelta_match = re.findall(r"(\d+)([dhm])", arg_text)
 
-        if username_match and (data["user_id"] is None):
+        if username_match and (data["user"] is None):
             username = username_match.group(0)
-            if username:
-                async with app:
-                    chat = await app.get_chat(username)
-                    data["user_id"] = chat.id
+            async with app:
+                chat = await app.get_chat(username)
+                chat.full_name = (
+                    f"{chat.first_name or ''} {chat.last_name or ''}".strip()
+                )
+                data["user"] = chat
 
-                    args_text = args_text.replace(arg_text, "", 1)
+                args_text = args_text.replace(arg_text, "", 1)
 
-        elif user_id_match and (data["user_id"] is None):
+        elif user_id_match and (data["chat"] is None):
             user_id = int(user_id_match.group(0))
-            data["user_id"] = user_id
+            async with app:
+                chat = await app.get_chat(user_id)
+                chat.full_name = (
+                    f"{chat.first_name or ''} {chat.last_name or ''}".strip()
+                )
+                data["user"] = chat
 
-            args_text = args_text.replace(arg_text, "", 1)
+                args_text = args_text.replace(arg_text, "", 1)
 
         elif timedelta_match:
             for value, unit in timedelta_match:
