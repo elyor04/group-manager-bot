@@ -108,4 +108,4 @@ class CallbackDataFilter(Filter):
                     return False
             elif data.get(key) != value:
                 return False
-        return {"callback_data": data}
+        return True

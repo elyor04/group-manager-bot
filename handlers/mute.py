@@ -46,11 +46,10 @@ async def mute_user(client: Client, message: types.Message):
     full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
 
     if mute_duration:
-        until_date = message.date + mute_duration
-
         await message.chat.restrict_member(
             user_id=user.id,
-            until_date=until_date,
+            permissions=types.ChatPermissions(),
+            until_date=message.date + mute_duration,
         )
         keyboard = InlineKeyboardMarkup(
             [
@@ -73,7 +72,7 @@ async def mute_user(client: Client, message: types.Message):
     else:
         await message.chat.restrict_member(
             user_id=user.id,
-            permissions=types.ChatPermissions(can_send_messages=False),
+            permissions=types.ChatPermissions(),
         )
         keyboard = InlineKeyboardMarkup(
             [

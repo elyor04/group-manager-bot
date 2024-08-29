@@ -46,13 +46,18 @@ async def check_messages(client: Client, message: types.Message):
             mute_duration = mute_durations.get(warning_count)
 
             if warning_count >= 5:
-                await message.chat.restrict_member(user_id=user.id)
+                await message.chat.restrict_member(
+                    user_id=user.id,
+                    permissions=types.ChatPermissions(),
+                )
                 mute_message = f'<a href="tg://user?id={user.id}">{full_name}</a> is sending bad words.\nHe/she has been muted forever due to multiple warnings.'
                 set_warning_count(chat.id, user.id, 0)
 
             elif mute_duration:
                 await message.chat.restrict_member(
-                    user_id=user.id, until_date=message.date + mute_duration
+                    user_id=user.id,
+                    permissions=types.ChatPermissions(),
+                    until_date=message.date + mute_duration,
                 )
                 next_action = "forever" if warning_count == 4 else "for 1 day"
                 mute_message = (
