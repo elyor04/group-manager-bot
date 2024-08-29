@@ -28,11 +28,11 @@ async def warn_user(client: Client, message: types.Message):
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
-        message_sender = message.reply_to_message.reply
+        message_id = message.reply_to_message.id
 
     elif args_dict["username"]:
         user = await client.get_chat(args_dict["username"])
-        message_sender = message.reply
+        message_id = None
 
     else:
         await message.reply("Please reply to a user or specify a username.")
@@ -96,8 +96,11 @@ async def warn_user(client: Client, message: types.Message):
             ]
         ]
     )
-    await message_sender(
-        mute_message, reply_markup=keyboard if warning_count >= 3 else None
+    await client.send_message(
+        message.chat.id,
+        mute_message,
+        reply_markup=keyboard if warning_count >= 3 else None,
+        reply_to_message_id=message_id,
     )
 
     if warning_count >= 3:

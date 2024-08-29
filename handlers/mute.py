@@ -17,11 +17,11 @@ async def mute_user(client: Client, message: types.Message):
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
-        message_sender = message.reply_to_message.reply
+        message_id = message.reply_to_message.id
 
     elif args_dict["username"]:
         user = await client.get_chat(args_dict["username"])
-        message_sender = message.reply
+        message_id = None
 
     else:
         await message.reply("Please reply to a user or specify a username.")
@@ -62,10 +62,12 @@ async def mute_user(client: Client, message: types.Message):
                 ]
             ]
         )
-        await message_sender(
+        await client.send_message(
+            message.chat.id,
             f'<a href="tg://user?id={user.id}">{full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}'
             + reason,
             reply_markup=keyboard,
+            reply_to_message_id=message_id,
         )
 
     else:
@@ -83,10 +85,12 @@ async def mute_user(client: Client, message: types.Message):
                 ]
             ]
         )
-        await message_sender(
+        await client.send_message(
+            message.chat.id,
             f'<a href="tg://user?id={user.id}">{full_name}</a> has been muted.'
             + reason,
             reply_markup=keyboard,
+            reply_to_message_id=message_id,
         )
 
     muted_count = get_muted_count(message.chat.id, user.id)

@@ -78,8 +78,10 @@ async def check_messages(client: Client, message: types.Message):
                     ]
                 ]
             )
-            await message.reply(
-                mute_message, reply_markup=keyboard if warning_count >= 3 else None
+            await client.send_message(
+                message.chat.id,
+                mute_message,
+                reply_markup=keyboard if warning_count >= 3 else None,
             )
 
             if warning_count >= 3:
@@ -90,8 +92,9 @@ async def check_messages(client: Client, message: types.Message):
 
     if re.search(r"http[s]?://\S+", text):
         await message.delete()
-        await message.reply(
-            f'<a href="tg://user?id={user.id}">{full_name}</a> do not send links.'
+        await client.send_message(
+            message.chat.id,
+            f'<a href="tg://user?id={user.id}">{full_name}</a> do not send links.',
         )
         return
 

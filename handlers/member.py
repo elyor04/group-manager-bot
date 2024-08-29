@@ -8,8 +8,9 @@ async def on_member_joined(client: Client, message: types.Message):
 
     for member in message.new_chat_members:
         full_name = f"{member.first_name or ''} {member.last_name or ''}".strip()
-        await message.reply(
-            f'Welcome to the group, <a href="tg://user?id={member.id}">{full_name}</a>'
+        await client.send_message(
+            message.chat.id,
+            f'Welcome to the group, <a href="tg://user?id={member.id}">{full_name}</a>',
         )
 
 
@@ -18,7 +19,9 @@ async def on_member_left(client: Client, message: types.Message):
 
     member = message.left_chat_member
     full_name = f"{member.first_name or ''} {member.last_name or ''}".strip()
-    await message.reply(f'Goodbye, <a href="tg://user?id={member.id}">{full_name}</a>')
+    await client.send_message(
+        message.chat.id, f'Goodbye, <a href="tg://user?id={member.id}">{full_name}</a>'
+    )
 
 
 def register_member_handlers(dp: Dispatcher):

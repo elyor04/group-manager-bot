@@ -20,13 +20,14 @@ async def write_by_bot(client: Client, message: types.Message):
     ) or (not args_text):
         return
 
-    if message.reply_to_message:
-        message_sender = message.reply_to_message.reply
-    else:
-        message_sender = message.reply
-
     await message.delete()
-    await message_sender(args_text)
+    message_id = message.reply_to_message.id if message.reply_to_message else None
+
+    await client.send_message(
+        message.chat.id,
+        args_text,
+        reply_to_message_id=message_id,
+    )
 
 
 def register_write_handlers(dp: Dispatcher):

@@ -28,15 +28,15 @@ async def user_info(client: Client, message: types.Message):
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
-        message_sender = message.reply_to_message.reply
+        message_id = message.reply_to_message.id
 
     elif args_dict["username"]:
         user = await client.get_chat(args_dict["username"])
-        message_sender = message.reply
+        message_id = None
 
     else:
         user = message.from_user
-        message_sender = message.reply
+        message_id = None
 
     await message.delete()
 
@@ -59,7 +59,11 @@ async def user_info(client: Client, message: types.Message):
         joined_date,
     )
 
-    await message_sender(info)
+    await client.send_message(
+        message.chat.id,
+        info,
+        reply_to_message_id=message_id,
+    )
 
 
 def register_info_handlers(dp: Dispatcher):

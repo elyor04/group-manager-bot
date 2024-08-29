@@ -14,11 +14,11 @@ async def unban_user(client: Client, message: types.Message):
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
-        message_sender = message.reply_to_message.reply
+        message_id = message.reply_to_message.id
 
     elif args_dict["username"]:
         user = await client.get_chat(args_dict["username"])
-        message_sender = message.reply
+        message_id = None
 
     else:
         await message.reply("Please reply to a user or specify a username.")
@@ -32,8 +32,10 @@ async def unban_user(client: Client, message: types.Message):
     await message.chat.unban_member(user_id=user.id)
 
     full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
-    await message_sender(
-        f'<a href="tg://user?id={user.id}">{full_name}</a> has been unbanned.'
+    await client.send_message(
+        message.chat.id,
+        f'<a href="tg://user?id={user.id}">{full_name}</a> has been unbanned.',
+        reply_to_message_id=message_id,
     )
 
 
