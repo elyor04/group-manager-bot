@@ -47,14 +47,10 @@ async def cancel_ban(client: Client, callback_query: types.CallbackQuery):
 
 def register_callback_handlers(dp: Dispatcher):
     dp.add_handler(
-        CallbackQueryHandler(
-            cancel_mute, mute_cb.filter(action="cancel") & filters.group
-        ),
+        CallbackQueryHandler(cancel_mute, mute_cb.filter(action="cancel")),
         0,
     )
     dp.add_handler(
-        CallbackQueryHandler(
-            cancel_ban, ban_cb.filter(action="cancel") & filters.group
-        ),
+        CallbackQueryHandler(cancel_ban, ban_cb.filter(action="cancel")),
         0,
     )
