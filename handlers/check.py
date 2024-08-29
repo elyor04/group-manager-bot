@@ -26,8 +26,8 @@ async def check_messages(message: types.Message):
     user = message.from_user
     chat_id = message.chat.id
 
-    message_count = get_message_count(chat_id, user.id)
-    set_message_count(chat_id, user.id, message_count + 1)
+    message_count = get_message_count(chat_id, user.id) + 1
+    set_message_count(chat_id, user.id, message_count)
 
     if await is_admin(message.chat, message.from_user):
         return

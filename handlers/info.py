@@ -13,8 +13,8 @@ info_template = """
 👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
 🌐 <b>Username</b>: {2}
 👀 <b>Status</b>: {3}
-❕ <b>Warns</b>: {4}/5
-💬 <b>Messages</b>: {5}
+💬 <b>Messages</b>: {4}
+❕ <b>Warns</b>: {5}/5
 🔇 <b>Muted</b>: {6}
 🚷 <b>Banned</b>: {7}
 """
@@ -45,8 +45,8 @@ async def user_info(message: types.Message):
         user.full_name,
         f"@{user.username}" if user.username else "",
         status.capitalize(),
-        get_warning_count(chat.id, user.id),
         get_message_count(chat.id, user.id),
+        get_warning_count(chat.id, user.id),
         get_muted_count(chat.id, user.id),
         get_banned_count(chat.id, user.id),
     )
