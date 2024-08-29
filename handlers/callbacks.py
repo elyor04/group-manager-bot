@@ -1,5 +1,5 @@
 from pyrogram.dispatcher import Dispatcher
-from pyrogram import Client, types
+from pyrogram import Client, filters, types
 from pyrogram.handlers.callback_query_handler import CallbackQueryHandler
 from utils.callbackData import CallbackData
 from utils.chatMember import is_admin, is_muted, is_banned
@@ -47,6 +47,14 @@ async def cancel_ban(client: Client, callback_query: types.CallbackQuery):
 
 def register_callback_handlers(dp: Dispatcher):
     dp.add_handler(
-        CallbackQueryHandler(cancel_mute, mute_cb.filter(action="cancel")), 0
+        CallbackQueryHandler(
+            cancel_mute, mute_cb.filter(action="cancel") & filters.group
+        ),
+        0,
     )
-    dp.add_handler(CallbackQueryHandler(cancel_ban, ban_cb.filter(action="cancel")), 0)
+    dp.add_handler(
+        CallbackQueryHandler(
+            cancel_ban, ban_cb.filter(action="cancel") & filters.group
+        ),
+        0,
+    )
