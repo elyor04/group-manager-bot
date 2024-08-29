@@ -23,12 +23,16 @@ mute_durations = {
 
 
 async def check_messages(message: types.Message):
+    user = message.from_user
+    chat_id = message.chat.id
+
+    message_count = get_message_count(chat_id, user.id)
+    set_message_count(chat_id, user.id, message_count + 1)
+
     if await is_admin(message.chat, message.from_user):
         return
 
     text = message.text.lower()
-    user = message.from_user
-    chat_id = message.chat.id
     warning_count = get_warning_count(chat_id, user.id)
 
     for word in swearing_words:
@@ -83,9 +87,6 @@ async def check_messages(message: types.Message):
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
         )
         return
-
-    message_count = get_message_count(chat_id, user.id)
-    set_message_count(chat_id, user.id, message_count + 1)
 
 
 def register_check_handlers(dp: Dispatcher):
