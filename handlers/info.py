@@ -1,5 +1,10 @@
 from aiogram import Dispatcher, types
-from database.models import get_warning_count, get_muted_count, get_banned_count
+from database.models import (
+    get_warning_count,
+    get_muted_count,
+    get_banned_count,
+    get_message_count,
+)
 from utils.chatMember import user_status
 from utils.extractArgs import extract_args
 
@@ -7,10 +12,11 @@ info_template = """
 🆔 <b>ID</b>: {0}
 👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
 🌐 <b>Username</b>: {2}
-👀 <b>Situation</b>: {3}
+👀 <b>Status</b>: {3}
 ❕ <b>Warns</b>: {4}/5
-🔇 <b>Muted</b>: {5}
-🚷 <b>Banned</b>: {6}
+💬 <b>Messages</b>: {5}
+🔇 <b>Muted</b>: {6}
+🚷 <b>Banned</b>: {7}
 """
 
 
@@ -40,6 +46,7 @@ async def user_info(message: types.Message):
         f"@{user.username}" if user.username else "",
         status.capitalize(),
         get_warning_count(chat.id, user.id),
+        get_message_count(chat.id, user.id),
         get_muted_count(chat.id, user.id),
         get_banned_count(chat.id, user.id),
     )

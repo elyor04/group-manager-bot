@@ -13,7 +13,8 @@ def initialize_db():
             user_id INTEGER,
             warnings INTEGER,
             muted INTEGER,
-            banned INTEGER
+            banned INTEGER,
+            messages INTEGER
         )
         """
     )

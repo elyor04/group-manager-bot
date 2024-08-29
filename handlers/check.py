@@ -6,6 +6,8 @@ from database.models import (
     set_warning_count,
     get_muted_count,
     set_muted_count,
+    get_message_count,
+    set_message_count,
 )
 from database.utils import get_swearing_words
 from utils.chatMember import is_admin
@@ -80,6 +82,10 @@ async def check_messages(message: types.Message):
         await message.answer(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
         )
+        return
+
+    message_count = get_message_count(chat_id, user.id)
+    set_message_count(chat_id, user.id, message_count + 1)
 
 
 def register_check_handlers(dp: Dispatcher):
