@@ -1,8 +1,10 @@
-from aiogram import Dispatcher, types
+from pyrogram.dispatcher import Dispatcher
+from pyrogram import Client, filters, types
+from pyrogram.handlers.message_handler import MessageHandler
 from utils.chatMember import is_admin
 
 
-async def delete_message(message: types.Message):
+async def delete_message(client: Client, message: types.Message):
     if not await is_admin(message.chat, message.from_user):
         await message.reply("You are not an admin of this group.")
         return
@@ -16,8 +18,6 @@ async def delete_message(message: types.Message):
 
 
 def register_delete_handlers(dp: Dispatcher):
-    dp.register_message_handler(
-        delete_message,
-        commands=["delete"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+    dp.add_handler(
+        MessageHandler(delete_message, filters.command("delete") & filters.group), 0
     )

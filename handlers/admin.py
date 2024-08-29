@@ -1,4 +1,7 @@
-from aiogram import Dispatcher, types
+from pyrogram.dispatcher import Dispatcher
+from pyrogram import Client, filters, types
+from pyrogram.enums import ChatMembersFilter
+from pyrogram.handlers.message_handler import MessageHandler
 
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣
@@ -13,25 +16,30 @@ message_template = """
 """
 
 
-async def send_to_admins(message: types.Message):
+async def send_to_admins(client: Client, message: types.Message):
     chat = message.chat
     user = message.from_user
+    full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
 
     message_send = message_template.format(
         str(chat.id)[4:],
         chat.title,
         user.id,
-        user.full_name,
-        message.message_id,
+        full_name,
+        message.id,
         message.text,
     )
 
-    chat_admins = await message.chat.get_administrators()
-    admin_ids = [admin.user.id for admin in chat_admins]
+    admin_ids = [
+        admin.user.id
+        async for admin in message.chat.get_members(
+            filter=ChatMembersFilter.ADMINISTRATORS
+        )
+    ]
 
     for admin_id in admin_ids:
         try:
-            await message.bot.send_message(admin_id, message_send)
+            await client.send_message(admin_id, message_send)
         except:
             pass
 
@@ -39,13 +47,13 @@ async def send_to_admins(message: types.Message):
 
 
 def register_admin_handlers(dp: Dispatcher):
-    dp.register_message_handler(
-        send_to_admins,
-        _admin_mention_filter,
-        content_types=types.ContentType.TEXT,
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+    dp.add_handler(
+        MessageHandler(
+            send_to_admins, filters.text & filters.group & filters.create(_admin_filter)
+        ),
+        0,
     )
 
 
-def _admin_mention_filter(message: types.Message):
+def _admin_filter(_, __, message: types.Message):
     return message.text.lower().startswith("@admin")

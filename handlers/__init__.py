@@ -1,4 +1,4 @@
-from aiogram import Dispatcher
+from pyrogram.dispatcher import Dispatcher
 from .start import register_start_handlers
 from .warn import register_warn_handlers
 from .mute import register_mute_handlers

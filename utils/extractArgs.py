@@ -1,18 +1,14 @@
 import re
 from datetime import timedelta
-from pyrogram import Client
-from config import BOT_TOKEN, API_ID, API_HASH
-
-# Initialize Client
-app = Client("my_bot", API_ID, API_HASH, bot_token=BOT_TOKEN, workdir="data")
 
 
-async def extract_args(args_text: str):
+async def extract_args(text: str):
     data = {
-        "user": None,
+        "username": None,
         "timedelta": None,
         "reason": None,
     }
+    args_text = get_args(text)
 
     if not args_text:
         return data
@@ -25,27 +21,17 @@ async def extract_args(args_text: str):
         user_id_match = re.search(r"\b\d{10}\b", args_text)
         timedelta_match = re.findall(r"(\d+)([dhm])", arg_text)
 
-        if username_match and (data["user"] is None):
+        if username_match:
             username = username_match.group(0)
-            async with app:
-                chat = await app.get_chat(username)
-                chat.full_name = (
-                    f"{chat.first_name or ''} {chat.last_name or ''}".strip()
-                )
-                data["user"] = chat
+            data["username"] = username
 
-                args_text = args_text.replace(arg_text, "", 1)
+            args_text = args_text.replace(arg_text, "", 1)
 
-        elif user_id_match and (data["chat"] is None):
+        elif user_id_match and (data["username"] is None):
             user_id = int(user_id_match.group(0))
-            async with app:
-                chat = await app.get_chat(user_id)
-                chat.full_name = (
-                    f"{chat.first_name or ''} {chat.last_name or ''}".strip()
-                )
-                data["user"] = chat
+            data["username"] = user_id
 
-                args_text = args_text.replace(arg_text, "", 1)
+            args_text = args_text.replace(arg_text, "", 1)
 
         elif timedelta_match:
             for value, unit in timedelta_match:
@@ -67,6 +53,11 @@ async def extract_args(args_text: str):
         data["timedelta"] = delta
 
     return data
+
+
+def get_args(text: str):
+    text_split = text.split(maxsplit=1)
+    return text_split[1] if len(text_split) > 1 else None
 
 
 def get_strtime(delta: timedelta):
