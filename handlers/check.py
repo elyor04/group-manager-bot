@@ -24,16 +24,16 @@ mute_durations = {
 
 async def check_messages(message: types.Message):
     user = message.from_user
-    chat_id = message.chat.id
+    chat = message.chat
 
-    message_count = get_message_count(chat_id, user.id) + 1
-    set_message_count(chat_id, user.id, message_count)
+    message_count = get_message_count(chat.id, user.id) + 1
+    set_message_count(chat.id, user.id, message_count)
 
-    if await is_admin(message.chat, message.from_user):
+    if await is_admin(chat, user):
         return
 
     text = message.text.lower()
-    warning_count = get_warning_count(chat_id, user.id)
+    warning_count = get_warning_count(chat.id, user.id)
 
     for word in swearing_words:
         if re.search(r"\b" + re.escape(word) + r"\b", text):
@@ -45,7 +45,7 @@ async def check_messages(message: types.Message):
             if warning_count >= 5:
                 await message.chat.restrict(user_id=user.id)
                 mute_message = f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been muted forever due to multiple warnings.'
-                set_warning_count(chat_id, user.id, 0)
+                set_warning_count(chat.id, user.id, 0)
 
             elif mute_duration:
                 await message.chat.restrict(
@@ -56,14 +56,14 @@ async def check_messages(message: types.Message):
                     f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been muted for {get_strtime(mute_duration)}.\n'
                     f"Next time will be muted {next_action}.\nWarns: {warning_count}/5"
                 )
-                set_warning_count(chat_id, user.id, warning_count)
+                set_warning_count(chat.id, user.id, warning_count)
 
             else:
                 mute_message = (
                     f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been warned.\n'
                     f"Warns: {warning_count}/3"
                 )
-                set_warning_count(chat_id, user.id, warning_count)
+                set_warning_count(chat.id, user.id, warning_count)
 
             keyboard = InlineKeyboardMarkup().add(
                 InlineKeyboardButton(
@@ -76,8 +76,8 @@ async def check_messages(message: types.Message):
             )
 
             if warning_count >= 3:
-                muted_count = get_muted_count(chat_id, user.id) + 1
-                set_muted_count(chat_id, user.id, muted_count)
+                muted_count = get_muted_count(chat.id, user.id) + 1
+                set_muted_count(chat.id, user.id, muted_count)
 
             return
 
