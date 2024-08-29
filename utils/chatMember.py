@@ -1,5 +1,5 @@
-from aiogram import types
-from aiogram.types import ChatMemberStatus
+from pyrogram import types
+from pyrogram.enums import ChatMemberStatus
 
 allowed_users = {
     "-1002116123455": [6373759004],
@@ -10,11 +10,11 @@ allowed_users = {
 async def user_status(chat: types.Chat, user: types.User):
     member = await chat.get_member(user.id)
 
-    if member.status == ChatMemberStatus.KICKED:
+    if member.status == ChatMemberStatus.BANNED:
         return "banned"
 
     if member.status == ChatMemberStatus.RESTRICTED:
-        if not member.can_send_messages:
+        if not member.permissions.can_send_messages:
             return "muted"
         else:
             return "member"
@@ -27,7 +27,7 @@ async def user_status(chat: types.Chat, user: types.User):
 
     if member.status in [
         ChatMemberStatus.ADMINISTRATOR,
-        ChatMemberStatus.CREATOR,
+        ChatMemberStatus.OWNER,
     ]:
         return "admin"
 
