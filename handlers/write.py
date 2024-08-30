@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from utils.extractArgs import get_args
@@ -30,7 +29,7 @@ async def write_by_bot(client: Client, message: types.Message):
     )
 
 
-def register_write_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(write_by_bot, filters.command("write") & filters.group), 0
+def register_write_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(write_by_bot, filters.command("write") & filters.group)
     )

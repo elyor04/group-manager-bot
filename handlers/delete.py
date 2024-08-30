@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from utils.chatMember import is_admin
@@ -17,7 +16,7 @@ async def delete_message(client: Client, message: types.Message):
     await message.reply_to_message.delete()
 
 
-def register_delete_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(delete_message, filters.command("delete") & filters.group), 0
+def register_delete_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(delete_message, filters.command("delete") & filters.group)
     )

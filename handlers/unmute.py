@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from utils.chatMember import is_admin, is_muted
@@ -44,7 +43,7 @@ async def unmute_user(client: Client, message: types.Message):
     )
 
 
-def register_unmute_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(unmute_user, filters.command("unmute") & filters.group), 0
+def register_unmute_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(unmute_user, filters.command("unmute") & filters.group)
     )

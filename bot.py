@@ -12,12 +12,11 @@ bot = Client(
     workdir="data",
     parse_mode=ParseMode.HTML,
 )
-dp = bot.dispatcher
 
 
 def start_bot():
     initialize_db()
-    register_handlers(dp)
+    register_handlers(bot)
     try:
         bot.run()
     finally:

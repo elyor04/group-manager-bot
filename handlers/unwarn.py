@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from database.models import get_warning_count, set_warning_count
@@ -44,7 +43,7 @@ async def unwarn_user(client: Client, message: types.Message):
         await message.reply("User has no warns.")
 
 
-def register_unwarn_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(unwarn_user, filters.command("unwarn") & filters.group), 0
+def register_unwarn_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(unwarn_user, filters.command("unwarn") & filters.group)
     )

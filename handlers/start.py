@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 
@@ -12,7 +11,7 @@ async def start_func(client: Client, message: types.Message):
     )
 
 
-def register_start_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(start_func, filters.command("start") & filters.private), 0
+def register_start_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(start_func, filters.command("start") & filters.private)
     )

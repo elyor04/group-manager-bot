@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from database.models import (
@@ -66,7 +65,5 @@ async def user_info(client: Client, message: types.Message):
     )
 
 
-def register_info_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(user_info, filters.command("info") & filters.group), 0
-    )
+def register_info_handlers(app: Client):
+    app.add_handler(MessageHandler(user_info, filters.command("info") & filters.group))

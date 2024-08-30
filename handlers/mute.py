@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -96,7 +95,5 @@ async def mute_user(client: Client, message: types.Message):
     set_muted_count(message.chat.id, user.id, muted_count + 1)
 
 
-def register_mute_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(mute_user, filters.command("mute") & filters.group), 0
-    )
+def register_mute_handlers(app: Client):
+    app.add_handler(MessageHandler(mute_user, filters.command("mute") & filters.group))

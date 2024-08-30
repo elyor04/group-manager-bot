@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -90,5 +89,5 @@ async def ban_user(client: Client, message: types.Message):
     set_banned_count(message.chat.id, user.id, banned_count + 1)
 
 
-def register_ban_handlers(dp: Dispatcher):
-    dp.add_handler(MessageHandler(ban_user, filters.command("ban") & filters.group), 0)
+def register_ban_handlers(app: Client):
+    app.add_handler(MessageHandler(ban_user, filters.command("ban") & filters.group))

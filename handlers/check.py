@@ -1,5 +1,4 @@
 import re
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -104,5 +103,5 @@ async def check_messages(client: Client, message: types.Message):
         return
 
 
-def register_check_handlers(dp: Dispatcher):
-    dp.add_handler(MessageHandler(check_messages, filters.text & filters.group), 0)
+def register_check_handlers(app: Client):
+    app.add_handler(MessageHandler(check_messages, filters.text & filters.group))

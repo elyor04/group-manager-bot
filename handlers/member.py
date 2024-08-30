@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers import ChatMemberUpdatedHandler
 from pyrogram.handlers.message_handler import MessageHandler
@@ -24,15 +23,11 @@ async def delete_join_leave_messages(client: Client, message: types.Message):
     await message.delete()
 
 
-def register_member_handlers(dp: Dispatcher):
-    dp.add_handler(
-        ChatMemberUpdatedHandler(on_chat_member_updated, filters.group),
-        0,
-    )
-    dp.add_handler(
+def register_member_handlers(app: Client):
+    app.add_handler(ChatMemberUpdatedHandler(on_chat_member_updated, filters.group))
+    app.add_handler(
         MessageHandler(
             delete_join_leave_messages,
             filters.group & (filters.new_chat_members | filters.left_chat_member),
-        ),
-        0,
+        )
     )

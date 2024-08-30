@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from utils.chatMember import is_admin, is_banned
@@ -39,7 +38,7 @@ async def unban_user(client: Client, message: types.Message):
     )
 
 
-def register_unban_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(unban_user, filters.command("unban") & filters.group), 0
+def register_unban_handlers(app: Client):
+    app.add_handler(
+        MessageHandler(unban_user, filters.command("unban") & filters.group)
     )

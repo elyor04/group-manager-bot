@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.handlers.message_handler import MessageHandler
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -113,7 +112,5 @@ async def warn_user(client: Client, message: types.Message):
         set_muted_count(chat_id, user_id, muted_count)
 
 
-def register_warn_handlers(dp: Dispatcher):
-    dp.add_handler(
-        MessageHandler(warn_user, filters.command("warn") & filters.group), 0
-    )
+def register_warn_handlers(app: Client):
+    app.add_handler(MessageHandler(warn_user, filters.command("warn") & filters.group))

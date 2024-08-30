@@ -1,4 +1,3 @@
-from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
 from pyrogram.enums import ChatMembersFilter
 from pyrogram.handlers.message_handler import MessageHandler
@@ -46,12 +45,11 @@ async def send_to_admins(client: Client, message: types.Message):
     await message.reply("Message has been sent to the group admins.")
 
 
-def register_admin_handlers(dp: Dispatcher):
-    dp.add_handler(
+def register_admin_handlers(app: Client):
+    app.add_handler(
         MessageHandler(
             send_to_admins, filters.text & filters.group & filters.create(_admin_filter)
-        ),
-        0,
+        )
     )
 
 
