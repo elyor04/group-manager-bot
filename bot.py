@@ -4,7 +4,7 @@ from database.db import initialize_db, close_db
 from handlers import register_handlers
 from config import API_ID, API_HASH, BOT_TOKEN
 
-bot = Client(
+app = Client(
     "my_bot",
     API_ID,
     API_HASH,
@@ -16,8 +16,8 @@ bot = Client(
 
 def start_bot():
     initialize_db()
-    register_handlers(bot)
+    register_handlers(app)
     try:
-        bot.run()
+        app.run()
     finally:
         close_db()
