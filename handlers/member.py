@@ -1,6 +1,5 @@
 from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
-from pyrogram.enums import ChatMemberStatus
 from pyrogram.handlers import ChatMemberUpdatedHandler
 from pyrogram.handlers.message_handler import MessageHandler
 
@@ -11,25 +10,13 @@ async def on_chat_member_updated(
     new_member = chat_member_updated.new_chat_member
     old_member = chat_member_updated.old_chat_member
 
-    if new_member and not old_member:
+    if new_member and (old_member is None):
         user = new_member.user
-        full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
-
-        if not old_member:
-            await client.send_message(
-                chat_member_updated.chat.id,
-                f'Welcome to the group, <a href="tg://user?id={user.id}">{full_name}</a>',
-            )
-
-    elif (old_member and not new_member) or (
-        new_member.status == ChatMemberStatus.BANNED
-    ):
-        user = old_member.user
         full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
 
         await client.send_message(
             chat_member_updated.chat.id,
-            f'Goodbye, <a href="tg://user?id={user.id}">{full_name}</a>',
+            f'Welcome to the group, <a href="tg://user?id={user.id}">{full_name}</a>',
         )
 
 
