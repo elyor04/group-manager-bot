@@ -28,12 +28,12 @@ async def unmute_user(client: Client, message: types.Message):
         return
 
     await message.delete()
-    chat = await client.get_chat(message.chat.id)
+    permissions = message.chat.permissions
     full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
 
     await message.chat.restrict_member(
         user_id=user.id,
-        permissions=chat.permissions,
+        permissions=permissions,
     )
 
     await client.send_message(

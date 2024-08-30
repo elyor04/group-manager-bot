@@ -19,11 +19,11 @@ async def cancel_mute(client: Client, callback_query: types.CallbackQuery):
         await callback_query.message.edit_text("User is not muted.")
         return
 
-    chat = await client.get_chat(callback_query.message.chat.id)
+    permissions = callback_query.message.chat.permissions
 
     await callback_query.message.chat.restrict_member(
         user_id=user.id,
-        permissions=chat.permissions,
+        permissions=permissions,
     )
     await callback_query.message.edit_text("Mute has been canceled.")
 
