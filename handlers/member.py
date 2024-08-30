@@ -1,33 +1,51 @@
 from pyrogram.dispatcher import Dispatcher
 from pyrogram import Client, filters, types
+from pyrogram.enums import ChatMemberStatus
+from pyrogram.handlers import ChatMemberUpdatedHandler
 from pyrogram.handlers.message_handler import MessageHandler
 
 
-async def on_member_joined(client: Client, message: types.Message):
-    await message.delete()
+async def on_chat_member_updated(
+    client: Client, chat_member_updated: types.ChatMemberUpdated
+):
+    new_member = chat_member_updated.new_chat_member
+    old_member = chat_member_updated.old_chat_member
 
-    for member in message.new_chat_members:
-        full_name = f"{member.first_name or ''} {member.last_name or ''}".strip()
+    if new_member and not old_member:
+        user = new_member.user
+        full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+
+        if not old_member:
+            await client.send_message(
+                chat_member_updated.chat.id,
+                f'Welcome to the group, <a href="tg://user?id={user.id}">{full_name}</a>',
+            )
+
+    elif (old_member and not new_member) or (
+        new_member.status == ChatMemberStatus.BANNED
+    ):
+        user = old_member.user
+        full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+
         await client.send_message(
-            message.chat.id,
-            f'Welcome to the group, <a href="tg://user?id={member.id}">{full_name}</a>',
+            chat_member_updated.chat.id,
+            f'Goodbye, <a href="tg://user?id={user.id}">{full_name}</a>',
         )
 
 
-async def on_member_left(client: Client, message: types.Message):
+async def delete_join_leave_messages(client: Client, message: types.Message):
     await message.delete()
-
-    member = message.left_chat_member
-    full_name = f"{member.first_name or ''} {member.last_name or ''}".strip()
-    await client.send_message(
-        message.chat.id, f'Goodbye, <a href="tg://user?id={member.id}">{full_name}</a>'
-    )
 
 
 def register_member_handlers(dp: Dispatcher):
     dp.add_handler(
-        MessageHandler(on_member_joined, filters.group & filters.new_chat_members), 0
+        ChatMemberUpdatedHandler(on_chat_member_updated, filters.group),
+        0,
     )
     dp.add_handler(
-        MessageHandler(on_member_left, filters.group & filters.left_chat_member), 0
+        MessageHandler(
+            delete_join_leave_messages,
+            filters.group & (filters.new_chat_members | filters.left_chat_member),
+        ),
+        0,
     )
