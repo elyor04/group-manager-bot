@@ -5,5 +5,6 @@
 
 ### Groups where the bot is being used:
 <a href="https://t.me/+hVokpxxogngwOTIy">InternationaL FriendS - GeneraL . 🇺🇸🇬🇧</a><br>
+<a href="https://t.me/interesting_english1">Discussion group</a><br>
 <a href="https://t.me/InternationalFriendsAlternative">International Friends - alternative</a><br>
 <a href="https://t.me/englishpracticgroup">English Practice Group</a><br>
