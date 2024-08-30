@@ -1,6 +1,7 @@
 from pyrogram import Client, filters, types
 from pyrogram.enums import ChatMembersFilter
 from pyrogram.handlers.message_handler import MessageHandler
+from database.models import get_message_count, set_message_count
 
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣
@@ -19,6 +20,9 @@ async def send_to_admins(client: Client, message: types.Message):
     chat = message.chat
     user = message.from_user
     full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+
+    message_count = get_message_count(chat.id, user.id) + 1
+    set_message_count(chat.id, user.id, message_count)
 
     message_send = message_template.format(
         str(chat.id)[4:],

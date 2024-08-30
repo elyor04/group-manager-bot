@@ -13,6 +13,7 @@ from .delete import register_delete_handlers
 from .member import register_member_handlers
 from .admin import register_admin_handlers
 from .check import register_check_handlers
+from .count import register_count_handlers
 
 
 def register_handlers(app: Client):
@@ -30,3 +31,4 @@ def register_handlers(app: Client):
     register_member_handlers(app)
     register_admin_handlers(app)
     register_check_handlers(app)
+    register_count_handlers(app)
