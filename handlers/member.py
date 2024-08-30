@@ -10,7 +10,7 @@ async def on_chat_member_updated(
     new_member = chat_member_updated.new_chat_member
     old_member = chat_member_updated.old_chat_member
 
-    if new_member and (old_member is None):
+    if new_member and (not old_member):
         user = new_member.user
         full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
 
