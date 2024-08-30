@@ -9,6 +9,7 @@ from .unmute import register_unmute_handlers
 from .unban import register_unban_handlers
 from .info import register_info_handlers
 from .write import register_write_handlers
+from .react import register_react_handlers
 from .delete import register_delete_handlers
 from .member import register_member_handlers
 from .admin import register_admin_handlers
@@ -26,6 +27,7 @@ def register_handlers(dp: Dispatcher):
     register_unban_handlers(dp)
     register_info_handlers(dp)
     register_write_handlers(dp)
+    register_react_handlers(dp)
     register_delete_handlers(dp)
     register_member_handlers(dp)
     register_admin_handlers(dp)
