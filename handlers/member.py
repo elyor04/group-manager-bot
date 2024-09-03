@@ -1,32 +1,33 @@
 from aiogram import Dispatcher, types
 
 
-async def on_member_joined(message: types.Message):
-    await message.delete()
+async def welcome_new_member(update: types.ChatMemberUpdated):
+    new_member = update.new_chat_member
+    old_member = update.old_chat_member
 
-    for member in message.new_chat_members:
-        await message.answer(
-            f'Welcome to the group, <a href="tg://user?id={member.id}">{member.full_name}</a>'
+    if new_member and (not old_member):
+        user = new_member.user
+
+        await update.bot.send_message(
+            update.chat.id,
+            f'Welcome to the group, <a href="tg://user?id={user.id}">{user.full_name}</a>',
         )
 
 
-async def on_member_left(message: types.Message):
+async def delete_join_leave_messages(message: types.Message):
     await message.delete()
-
-    member = message.left_chat_member
-    await message.answer(
-        f'Goodbye, <a href="tg://user?id={member.id}">{member.full_name}</a>'
-    )
 
 
 def register_member_handlers(dp: Dispatcher):
-    dp.register_message_handler(
-        on_member_joined,
-        content_types=types.ContentType.NEW_CHAT_MEMBERS,
+    dp.register_chat_member_handler(
+        welcome_new_member,
         chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
     dp.register_message_handler(
-        on_member_left,
-        content_types=types.ContentType.LEFT_CHAT_MEMBER,
+        delete_join_leave_messages,
+        content_types=[
+            types.ContentType.NEW_CHAT_MEMBERS,
+            types.ContentType.LEFT_CHAT_MEMBER,
+        ],
         chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )

@@ -7,6 +7,7 @@ from database.models import (
 )
 from utils.chatMember import user_status
 from utils.extractArgs import extract_args
+from userbot import app
 
 info_template = """
 🆔 <b>ID</b>: {0}
@@ -17,6 +18,7 @@ info_template = """
 ❕ <b>Warns</b>: {5}/5
 🔇 <b>Muted</b>: {6}
 🚷 <b>Banned</b>: {7}
+📅 <b>Joined</b>: {8}
 """
 
 
@@ -39,6 +41,8 @@ async def user_info(message: types.Message):
 
     chat = message.chat
     status = await user_status(chat, user)
+    member = await app.get_chat_member(chat.id, user.id)
+    joined_date = member.joined_date.strftime("%d/%m/%Y") if member.joined_date else ""
 
     info = info_template.format(
         user.id,
@@ -49,6 +53,7 @@ async def user_info(message: types.Message):
         get_warning_count(chat.id, user.id),
         get_muted_count(chat.id, user.id),
         get_banned_count(chat.id, user.id),
+        joined_date,
     )
 
     await message_sender(info)
