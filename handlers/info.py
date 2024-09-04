@@ -1,4 +1,5 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
 from database.models import (
     get_warning_count,
     get_muted_count,
@@ -23,7 +24,7 @@ info_template = """
 
 
 async def user_info(message: types.Message):
-    args_dict = await extract_args(message.get_args())
+    args_dict = await extract_args(message.text)
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
@@ -60,8 +61,8 @@ async def user_info(message: types.Message):
 
 
 def register_info_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         user_info,
-        commands=["info"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("info"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

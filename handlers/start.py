@@ -1,4 +1,5 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
 
 
 async def start_func(message: types.Message):
@@ -9,8 +10,6 @@ async def start_func(message: types.Message):
 
 
 def register_start_handlers(dp: Dispatcher):
-    dp.register_message_handler(
-        start_func,
-        commands=["start"],
-        chat_type=[types.ChatType.PRIVATE],
+    dp.message.register(
+        start_func, Command("start"), F.chat.type == enums.ChatType.PRIVATE
     )

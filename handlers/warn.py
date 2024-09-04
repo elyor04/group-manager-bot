@@ -1,5 +1,6 @@
-from aiogram import Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 from database.models import (
     get_warning_count,
     set_warning_count,
@@ -8,7 +9,7 @@ from database.models import (
 )
 from utils.chatMember import is_admin, is_muted, is_banned
 from utils.extractArgs import extract_args, get_strtime
-from .callbacks import mute_cb
+from utils.callbackData import MuteCallbackData
 from datetime import timedelta
 
 mute_durations = {
@@ -22,7 +23,7 @@ async def warn_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    args_dict = await extract_args(message.get_args())
+    args_dict = await extract_args(message.text)
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
@@ -58,7 +59,10 @@ async def warn_user(message: types.Message):
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
     if warning_count >= 5:
-        await message.chat.restrict(user_id=user_id)
+        await message.chat.restrict(
+            user_id=user_id,
+            permissions=ChatPermissions(),
+        )
         mute_message = (
             f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted forever due to multiple warnings.'
             + reason
@@ -67,7 +71,9 @@ async def warn_user(message: types.Message):
 
     elif mute_duration:
         await message.chat.restrict(
-            user_id=user_id, until_date=message.date + mute_duration
+            user_id=user_id,
+            permissions=ChatPermissions(),
+            until_date=message.date + mute_duration,
         )
         next_action = "forever" if warning_count == 4 else "for 1 day"
         mute_message = (
@@ -83,11 +89,17 @@ async def warn_user(message: types.Message):
         )
         set_warning_count(chat_id, user_id, warning_count)
 
-    keyboard = InlineKeyboardMarkup().add(
-        InlineKeyboardButton(
-            "Cancel Mute",
-            callback_data=mute_cb.new(user_id=user_id, action="cancel"),
-        )
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="Cancel Mute",
+                    callback_data=MuteCallbackData(
+                        user_id=user_id, action="cancel"
+                    ).pack(),
+                )
+            ]
+        ]
     )
     await message_sender(
         mute_message, reply_markup=keyboard if warning_count >= 3 else None
@@ -99,8 +111,8 @@ async def warn_user(message: types.Message):
 
 
 def register_warn_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         warn_user,
-        commands=["warn"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("warn"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

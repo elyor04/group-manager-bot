@@ -1,17 +1,25 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.enums import ChatMemberStatus
 
 
 async def welcome_new_member(update: types.ChatMemberUpdated):
     new_member = update.new_chat_member
     old_member = update.old_chat_member
 
-    if new_member and (not old_member):
+    if new_member and (new_member.status == ChatMemberStatus.MEMBER):
         user = new_member.user
 
-        await update.bot.send_message(
-            update.chat.id,
-            f'Welcome to the group, <a href="tg://user?id={user.id}">{user.full_name}</a>',
-        )
+        if not old_member:
+            await update.bot.send_message(
+                update.chat.id,
+                f'Welcome to the group, <a href="tg://user?id={user.id}">{user.full_name}</a>',
+            )
+
+        elif old_member.status in [ChatMemberStatus.LEFT, ChatMemberStatus.KICKED]:
+            await update.bot.send_message(
+                update.chat.id,
+                f'Welcome back to the group, <a href="tg://user?id={user.id}">{user.full_name}</a>',
+            )
 
 
 async def delete_join_leave_messages(message: types.Message):
@@ -19,15 +27,14 @@ async def delete_join_leave_messages(message: types.Message):
 
 
 def register_member_handlers(dp: Dispatcher):
-    dp.register_chat_member_handler(
+    dp.chat_member.register(
         welcome_new_member,
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )
-    dp.register_message_handler(
+    dp.message.register(
         delete_join_leave_messages,
-        content_types=[
-            types.ContentType.NEW_CHAT_MEMBERS,
-            types.ContentType.LEFT_CHAT_MEMBER,
-        ],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        F.content_types.in_(
+            [enums.ContentType.NEW_CHAT_MEMBERS, enums.ContentType.LEFT_CHAT_MEMBER]
+        ),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

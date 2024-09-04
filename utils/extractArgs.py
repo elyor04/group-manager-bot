@@ -3,12 +3,13 @@ from datetime import timedelta
 from userbot import app
 
 
-async def extract_args(args_text: str):
+async def extract_args(text: str):
     data = {
         "user": None,
         "timedelta": None,
         "reason": None,
     }
+    args_text = get_args(text)
 
     if not args_text:
         return data
@@ -57,6 +58,11 @@ async def extract_args(args_text: str):
         data["timedelta"] = delta
 
     return data
+
+
+def get_args(text: str):
+    text_split = text.split(maxsplit=1)
+    return text_split[1] if len(text_split) > 1 else None
 
 
 def get_strtime(delta: timedelta):

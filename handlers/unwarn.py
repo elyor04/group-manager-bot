@@ -1,4 +1,5 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
 from database.models import get_warning_count, set_warning_count
 from utils.chatMember import is_admin
 from utils.extractArgs import extract_args
@@ -9,7 +10,7 @@ async def unwarn_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    args_dict = await extract_args(message.get_args())
+    args_dict = await extract_args(message.text)
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
@@ -40,8 +41,8 @@ async def unwarn_user(message: types.Message):
 
 
 def register_unwarn_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         unwarn_user,
-        commands=["unwarn"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("unwarn"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

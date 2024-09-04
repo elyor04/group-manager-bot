@@ -1,17 +1,16 @@
-from aiogram import Dispatcher, types
-from aiogram.utils.callback_data import CallbackData
+from aiogram import Dispatcher, types, F
 from utils.chatMember import is_admin, is_muted, is_banned
-
-mute_cb = CallbackData("mute", "user_id", "action")
-ban_cb = CallbackData("ban", "user_id", "action")
+from utils.callbackData import MuteCallbackData, BanCallbackData
 
 
-async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
+async def cancel_mute(
+    callback_query: types.CallbackQuery, callback_data: MuteCallbackData
+):
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
 
-    user = await callback_query.message.bot.get_chat(int(callback_data["user_id"]))
+    user = await callback_query.message.bot.get_chat(callback_data.user_id)
 
     if not await is_muted(callback_query.message.chat, user):
         await callback_query.message.edit_text("User is not muted.")
@@ -26,12 +25,14 @@ async def cancel_mute(callback_query: types.CallbackQuery, callback_data: dict):
     await callback_query.message.edit_text("Mute has been canceled.")
 
 
-async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
+async def cancel_ban(
+    callback_query: types.CallbackQuery, callback_data: BanCallbackData
+):
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
 
-    user = await callback_query.message.bot.get_chat(int(callback_data["user_id"]))
+    user = await callback_query.message.bot.get_chat(callback_data.user_id)
 
     if not await is_banned(callback_query.message.chat, user):
         await callback_query.message.edit_text("User is not banned.")
@@ -42,5 +43,9 @@ async def cancel_ban(callback_query: types.CallbackQuery, callback_data: dict):
 
 
 def register_callback_handlers(dp: Dispatcher):
-    dp.register_callback_query_handler(cancel_mute, mute_cb.filter(action="cancel"))
-    dp.register_callback_query_handler(cancel_ban, ban_cb.filter(action="cancel"))
+    dp.callback_query.register(
+        cancel_mute, MuteCallbackData.filter(F.action == "cancel")
+    )
+    dp.callback_query.register(
+        cancel_ban, BanCallbackData.filter(F.action == "cancel")
+    )

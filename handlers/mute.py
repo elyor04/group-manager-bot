@@ -1,9 +1,10 @@
-from aiogram import Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 from database.models import get_muted_count, set_muted_count
 from utils.chatMember import is_admin, is_muted, is_banned
 from utils.extractArgs import extract_args, get_strtime
-from .callbacks import mute_cb
+from utils.callbackData import MuteCallbackData
 
 
 async def mute_user(message: types.Message):
@@ -11,7 +12,7 @@ async def mute_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    args_dict = await extract_args(message.get_args())
+    args_dict = await extract_args(message.text)
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
@@ -43,17 +44,22 @@ async def mute_user(message: types.Message):
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
     if mute_duration:
-        until_date = message.date + mute_duration
-
         await message.chat.restrict(
             user_id=user.id,
-            until_date=until_date,
+            permissions=ChatPermissions(),
+            until_date=message.date + mute_duration,
         )
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Mute",
-                callback_data=mute_cb.new(user_id=user.id, action="cancel"),
-            )
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="Cancel Mute",
+                        callback_data=MuteCallbackData(
+                            user_id=user.id, action="cancel"
+                        ).pack(),
+                    )
+                ]
+            ]
         )
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}'
@@ -64,13 +70,19 @@ async def mute_user(message: types.Message):
     else:
         await message.chat.restrict(
             user_id=user.id,
-            permissions=types.ChatPermissions(can_send_messages=False),
+            permissions=ChatPermissions(),
         )
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Mute",
-                callback_data=mute_cb.new(user_id=user.id, action="cancel"),
-            )
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="Cancel Mute",
+                        callback_data=MuteCallbackData(
+                            user_id=user.id, action="cancel"
+                        ).pack(),
+                    )
+                ]
+            ]
         )
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.'
@@ -83,8 +95,8 @@ async def mute_user(message: types.Message):
 
 
 def register_mute_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         mute_user,
-        commands=["mute"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("mute"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

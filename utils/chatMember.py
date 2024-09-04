@@ -1,5 +1,5 @@
 from aiogram import types
-from aiogram.types import ChatMemberStatus
+from aiogram.enums import ChatMemberStatus
 
 allowed_users = {
     "-1002116123455": [6373759004],
@@ -25,10 +25,7 @@ async def user_status(chat: types.Chat, user: types.User):
     if member.status == ChatMemberStatus.MEMBER:
         return "member"
 
-    if member.status in [
-        ChatMemberStatus.ADMINISTRATOR,
-        ChatMemberStatus.CREATOR,
-    ]:
+    if member.status in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR]:
         return "admin"
 
     return "unknown"

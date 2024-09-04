@@ -1,4 +1,4 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
 from database.models import get_message_count, set_message_count
 
 message_template = """
@@ -42,11 +42,11 @@ async def send_to_admins(message: types.Message):
 
 
 def register_admin_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         send_to_admins,
+        F.content_type == enums.ContentType.TEXT,
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
         _admin_filter,
-        content_types=types.ContentType.TEXT,
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
     )
 
 

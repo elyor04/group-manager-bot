@@ -1,4 +1,4 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
 from database.models import get_message_count, set_message_count
 
 
@@ -11,7 +11,7 @@ async def count_messages(message: types.Message):
 
 
 def register_count_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         count_messages,
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

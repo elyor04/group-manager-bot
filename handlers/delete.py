@@ -1,4 +1,5 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
 from utils.chatMember import is_admin
 
 
@@ -16,8 +17,8 @@ async def delete_message(message: types.Message):
 
 
 def register_delete_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         delete_message,
-        commands=["delete"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("delete"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

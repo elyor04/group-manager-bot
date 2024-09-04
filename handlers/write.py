@@ -1,5 +1,7 @@
-from aiogram import Dispatcher, types
-from aiogram.types import ChatMemberStatus
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
+from aiogram.enums import ChatMemberStatus
+from utils.extractArgs import get_args
 
 allowed_users = {
     # "-1002116123455": [7084938423],
@@ -11,16 +13,16 @@ async def write_by_bot(message: types.Message):
     user_id = message.from_user.id
     chat_id = str(message.chat.id)
 
-    allowed_ids = [
-        admin.user.id
-        for admin in await message.chat.get_administrators()
-        if admin.status == ChatMemberStatus.OWNER
-    ]
+    args_text = get_args(message.text)
+    member = await message.chat.get_member(user_id)
 
-    allowed_ids.extend(allowed_users["all"])
+    allowed_ids = allowed_users["all"]
     allowed_ids.extend(allowed_users.get(chat_id, []))
 
-    if (user_id not in set(allowed_ids)) or (not message.get_args()):
+    if not (
+        args_text
+        and ((user_id in allowed_ids) or (member.status == ChatMemberStatus.CREATOR))
+    ):
         return
 
     if message.reply_to_message:
@@ -29,12 +31,12 @@ async def write_by_bot(message: types.Message):
         message_sender = message.answer
 
     await message.delete()
-    await message_sender(message.get_args())
+    await message_sender(args_text)
 
 
 def register_write_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         write_by_bot,
-        commands=["write"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("write"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

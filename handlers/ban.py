@@ -1,9 +1,10 @@
-from aiogram import Dispatcher, types
+from aiogram import Dispatcher, types, enums, F
+from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from database.models import get_banned_count, set_banned_count
 from utils.chatMember import is_admin, is_banned
 from utils.extractArgs import extract_args, get_strtime
-from .callbacks import ban_cb
+from utils.callbackData import BanCallbackData
 
 
 async def ban_user(message: types.Message):
@@ -11,7 +12,7 @@ async def ban_user(message: types.Message):
         await message.reply("You are not an admin of this group.")
         return
 
-    args_dict = await extract_args(message.get_args())
+    args_dict = await extract_args(message.text)
 
     if message.reply_to_message:
         user = message.reply_to_message.from_user
@@ -41,14 +42,21 @@ async def ban_user(message: types.Message):
     if ban_duration:
         until_date = message.date + ban_duration
 
-        await message.chat.kick(
+        await message.chat.ban(
             user_id=user.id,
             until_date=until_date,
         )
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
-            )
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="Cancel Ban",
+                        callback_data=BanCallbackData(
+                            user_id=user.id, action="cancel"
+                        ).pack(),
+                    )
+                ]
+            ]
         )
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}'
@@ -57,11 +65,18 @@ async def ban_user(message: types.Message):
         )
 
     else:
-        await message.chat.kick(user_id=user.id)
-        keyboard = InlineKeyboardMarkup().add(
-            InlineKeyboardButton(
-                "Cancel Ban", callback_data=ban_cb.new(user_id=user.id, action="cancel")
-            )
+        await message.chat.ban(user_id=user.id)
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text="Cancel Ban",
+                        callback_data=BanCallbackData(
+                            user_id=user.id, action="cancel"
+                        ).pack(),
+                    )
+                ]
+            ]
         )
         await message_sender(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.'
@@ -74,8 +89,8 @@ async def ban_user(message: types.Message):
 
 
 def register_ban_handlers(dp: Dispatcher):
-    dp.register_message_handler(
+    dp.message.register(
         ban_user,
-        commands=["ban"],
-        chat_type=[types.ChatType.GROUP, types.ChatType.SUPERGROUP],
+        Command("ban"),
+        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )
