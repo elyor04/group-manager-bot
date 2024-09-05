@@ -12,17 +12,15 @@ async def main():
     dp = Dispatcher()
 
     initialize_db()
-    register_handlers(dp)
     register_middlewares(dp)
+    register_handlers(dp)
 
     await client.start()
     await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
-    try:
-        await dp.start_polling(bot)
-    finally:
-        await client.stop()
-        close_db()
+    await client.stop()
+    close_db()
 
 
 if __name__ == "__main__":
