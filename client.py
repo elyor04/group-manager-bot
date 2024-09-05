@@ -2,7 +2,7 @@ from pyrogram import Client
 from pyrogram.enums import ParseMode
 from config import API_ID, API_HASH, BOT_TOKEN
 
-app = Client(
+client = Client(
     "my_bot",
     API_ID,
     API_HASH,

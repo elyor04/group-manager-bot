@@ -8,7 +8,7 @@ from database.models import (
 )
 from utils.chatMember import user_status
 from utils.extractArgs import extract_args
-from userbot import app
+from client import client
 
 info_template = """
 🆔 <b>ID</b>: {0}
@@ -42,7 +42,7 @@ async def user_info(message: types.Message):
 
     chat = message.chat
     status = await user_status(chat, user)
-    member = await app.get_chat_member(chat.id, user.id)
+    member = await client.get_chat_member(chat.id, user.id)
     joined_date = member.joined_date.strftime("%d/%m/%Y") if member.joined_date else ""
 
     info = info_template.format(

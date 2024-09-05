@@ -1,6 +1,6 @@
 import re
 from datetime import timedelta
-from userbot import app
+from client import client
 
 
 async def extract_args(text: str):
@@ -24,7 +24,7 @@ async def extract_args(text: str):
 
         if username_match:
             username = username_match.group(0)
-            chat = await app.get_chat(username)
+            chat = await client.get_chat(username)
             chat.full_name = f"{chat.first_name or ''} {chat.last_name or ''}".strip()
             data["user"] = chat
 
@@ -32,7 +32,7 @@ async def extract_args(text: str):
 
         elif user_id_match and (data["chat"] is None):
             user_id = int(user_id_match.group(0))
-            chat = await app.get_chat(user_id)
+            chat = await client.get_chat(user_id)
             chat.full_name = f"{chat.first_name or ''} {chat.last_name or ''}".strip()
             data["user"] = chat
 
