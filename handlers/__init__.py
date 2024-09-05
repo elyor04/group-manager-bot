@@ -13,7 +13,6 @@ from .delete import register_delete_handlers
 from .member import register_member_handlers
 from .admin import register_admin_handlers
 from .check import register_check_handlers
-from .count import register_count_handlers
 
 
 def register_handlers(dp: Dispatcher):
@@ -31,4 +30,3 @@ def register_handlers(dp: Dispatcher):
     register_member_handlers(dp)
     register_admin_handlers(dp)
     register_check_handlers(dp)
-    register_count_handlers(dp)

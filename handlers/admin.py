@@ -1,5 +1,4 @@
 from aiogram import Dispatcher, types, enums, F
-from database.models import get_message_count, set_message_count
 
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣
@@ -17,9 +16,6 @@ message_template = """
 async def send_to_admins(message: types.Message):
     chat = message.chat
     user = message.from_user
-
-    message_count = get_message_count(chat.id, user.id) + 1
-    set_message_count(chat.id, user.id, message_count)
 
     message_send = message_template.format(
         str(chat.id)[4:],

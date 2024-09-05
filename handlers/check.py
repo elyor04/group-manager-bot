@@ -6,8 +6,6 @@ from database.models import (
     set_warning_count,
     get_muted_count,
     set_muted_count,
-    get_message_count,
-    set_message_count,
 )
 from database.utils import get_swearing_words
 from utils.chatMember import is_admin
@@ -23,15 +21,11 @@ mute_durations = {
 
 
 async def check_messages(message: types.Message):
-    user = message.from_user
-    chat = message.chat
-
-    message_count = get_message_count(chat.id, user.id) + 1
-    set_message_count(chat.id, user.id, message_count)
-
-    if await is_admin(chat, user):
+    if await is_admin(message.chat, message.from_user):
         return
 
+    user = message.from_user
+    chat = message.chat
     text = message.text.lower()
     warning_count = get_warning_count(chat.id, user.id)
 
