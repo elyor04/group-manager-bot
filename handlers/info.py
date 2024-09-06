@@ -11,7 +11,7 @@ from utils.extractArgs import extract_args
 from client import client
 
 info_template = """
-🆔 <b>ID</b>: {0}
+🆔 <b>ID</b>: <code>{0}</code>
 👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
 🌐 <b>Username</b>: {2}
 👀 <b>Status</b>: {3}
