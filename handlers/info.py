@@ -10,7 +10,7 @@ from utils.chatMember import user_status
 from utils.extractArgs import extract_args
 
 info_template = """
-🆔 <b>ID</b>: <code>{0}</code>
+🆔 <b>ID</b>: {0}
 👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
 🌐 <b>Username</b>: {2}
 👀 <b>Status</b>: {3}
