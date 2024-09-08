@@ -1,25 +1,29 @@
-import sqlite3
+from sqlalchemy import create_engine, Column, Integer
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Establish database connection
-conn = sqlite3.connect("data/bot_data.db")
-cursor = conn.cursor()
+engine = create_engine("sqlite:///data/bot_data.db", echo=True)
+session = sessionmaker(bind=engine)()
+Base = declarative_base()
+
+
+class UserInfo(Base):
+    __tablename__ = "user_info"
+
+    chat_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True)
+    warnings = Column(Integer)
+    muted = Column(Integer)
+    banned = Column(Integer)
+    messages = Column(Integer)
+
+    def __repr__(self):
+        return f"<UserInfo(chat_id={self.chat_id}, user_id={self.user_id})>"
 
 
 def initialize_db():
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS user_info (
-            chat_id INTEGER,
-            user_id INTEGER,
-            warnings INTEGER,
-            muted INTEGER,
-            banned INTEGER,
-            messages INTEGER
-        )
-        """
-    )
-    conn.commit()
+    Base.metadata.create_all(engine)
 
 
 def close_db():
-    conn.close()
+    session.close()
