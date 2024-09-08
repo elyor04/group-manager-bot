@@ -7,9 +7,7 @@ def get_user_info(chat_id: int, user_id: int):
     )
 
     if not user_info:
-        user_info = UserInfo(
-            chat_id=chat_id, user_id=user_id, warnings=0, muted=0, banned=0, messages=0
-        )
+        user_info = UserInfo(chat_id=chat_id, user_id=user_id)
         session.add(user_info)
         session.commit()
 

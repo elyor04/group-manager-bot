@@ -12,10 +12,10 @@ class UserInfo(Base):
 
     chat_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, primary_key=True)
-    warnings = Column(Integer)
-    muted = Column(Integer)
-    banned = Column(Integer)
-    messages = Column(Integer)
+    warnings = Column(Integer, default=0)
+    muted = Column(Integer, default=0)
+    banned = Column(Integer, default=0)
+    messages = Column(Integer, default=0)
 
     def __repr__(self):
         return f"<UserInfo(chat_id={self.chat_id}, user_id={self.user_id})>"
