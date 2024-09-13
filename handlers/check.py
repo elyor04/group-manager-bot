@@ -7,13 +7,13 @@ from database.models import (
     get_muted_count,
     set_muted_count,
 )
-from database.utils import get_swearing_words
+from database.utils import get_bad_words
 from utils.chatMember import is_admin
 from utils.extractArgs import get_strtime
 from datetime import timedelta
 from utils.callbackData import MuteCallbackData
 
-swearing_words = get_swearing_words()
+swearing_words = get_bad_words()
 mute_durations = {
     3: timedelta(hours=1),
     4: timedelta(days=1),
