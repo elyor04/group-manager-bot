@@ -4,9 +4,6 @@ from utils.chatMember import is_admin
 
 
 async def delete_message(message: types.Message):
-    if not await is_admin(message.chat, await message.bot.get_me()):
-        return
-
     if not await is_admin(message.chat, message.from_user):
         return
 
