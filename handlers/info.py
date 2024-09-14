@@ -6,7 +6,7 @@ from database.models import (
     get_banned_count,
     get_message_count,
 )
-from utils.chatMember import user_status
+from utils.chatMember import user_status, is_admin
 from utils.extractArgs import extract_args
 from client import client
 
@@ -24,6 +24,10 @@ info_template = """
 
 
 async def user_info(message: types.Message):
+    if not await is_admin(message.chat, await message.bot.get_me()):
+        await message.reply("Please make me an admin first.")
+        return
+
     args_dict = await extract_args(message.text)
 
     if message.reply_to_message:

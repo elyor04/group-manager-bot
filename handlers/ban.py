@@ -8,6 +8,10 @@ from utils.callbackData import BanCallbackData
 
 
 async def ban_user(message: types.Message):
+    if not await is_admin(message.chat, await message.bot.get_me()):
+        await message.reply("Please make me an admin first.")
+        return
+
     if not await is_admin(message.chat, message.from_user):
         await message.reply("You are not an admin of this group.")
         return

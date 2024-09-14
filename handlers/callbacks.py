@@ -6,6 +6,12 @@ from utils.callbackData import MuteCallbackData, BanCallbackData
 async def cancel_mute(
     callback_query: types.CallbackQuery, callback_data: MuteCallbackData
 ):
+    if not await is_admin(
+        callback_query.message.chat, await callback_query.bot.get_me()
+    ):
+        await callback_query.answer("Please make me an admin first.")
+        return
+
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
@@ -28,6 +34,12 @@ async def cancel_mute(
 async def cancel_ban(
     callback_query: types.CallbackQuery, callback_data: BanCallbackData
 ):
+    if not await is_admin(
+        callback_query.message.chat, await callback_query.bot.get_me()
+    ):
+        await callback_query.answer("Please make me an admin first.")
+        return
+
     if not await is_admin(callback_query.message.chat, callback_query.from_user):
         await callback_query.answer("You are not an admin of this group.")
         return
@@ -46,6 +58,4 @@ def register_callback_handlers(dp: Dispatcher):
     dp.callback_query.register(
         cancel_mute, MuteCallbackData.filter(F.action == "cancel")
     )
-    dp.callback_query.register(
-        cancel_ban, BanCallbackData.filter(F.action == "cancel")
-    )
+    dp.callback_query.register(cancel_ban, BanCallbackData.filter(F.action == "cancel"))

@@ -1,4 +1,5 @@
 from aiogram import Dispatcher, types, enums, F
+from utils.chatMember import is_admin
 
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣
@@ -14,6 +15,10 @@ message_template = """
 
 
 async def send_to_admins(message: types.Message):
+    if not await is_admin(message.chat, await message.bot.get_me()):
+        await message.reply("Please make me an admin first.")
+        return
+
     chat = message.chat
     user = message.from_user
 

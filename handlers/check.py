@@ -21,6 +21,9 @@ mute_durations = {
 
 
 async def check_messages(message: types.Message):
+    if not await is_admin(message.chat, await message.bot.get_me()):
+        return
+
     if await is_admin(message.chat, message.from_user):
         return
 
