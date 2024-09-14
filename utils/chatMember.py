@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.enums import ChatMemberStatus
 
 allowed_users = {
-    "-1002116123455": [6373759004],
+    # "-1002116123455": [6373759004],
     "all": [1398600688, 6840837015],
 }
 
