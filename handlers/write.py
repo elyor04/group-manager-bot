@@ -11,9 +11,6 @@ allowed_users = {
 
 
 async def write_by_bot(message: types.Message):
-    if not await is_admin(message.chat, await message.bot.get_me()):
-        return
-
     user_id = message.from_user.id
     chat_id = str(message.chat.id)
 
