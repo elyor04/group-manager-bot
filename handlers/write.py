@@ -2,7 +2,6 @@ from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
 from aiogram.enums import ChatMemberStatus
 from utils.extractArgs import get_args
-from utils.chatMember import is_admin
 
 allowed_users = {
     # "-1002116123455": [7084938423],
@@ -11,9 +10,6 @@ allowed_users = {
 
 
 async def write_by_bot(message: types.Message):
-    if not await is_admin(message.chat, message.bot):
-        return
-
     user_id = message.from_user.id
     chat_id = str(message.chat.id)
 
