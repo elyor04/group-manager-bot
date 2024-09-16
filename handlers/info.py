@@ -24,7 +24,7 @@ info_template = """
 
 
 async def user_info(message: types.Message):
-    if not await is_admin(message.chat, await message.bot.get_me()):
+    if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
 

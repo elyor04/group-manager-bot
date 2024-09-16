@@ -8,7 +8,7 @@ from utils.callbackData import MuteCallbackData
 
 
 async def mute_user(message: types.Message):
-    if not await is_admin(message.chat, await message.bot.get_me()):
+    if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
 

@@ -6,9 +6,7 @@ from utils.callbackData import MuteCallbackData, BanCallbackData
 async def cancel_mute(
     callback_query: types.CallbackQuery, callback_data: MuteCallbackData
 ):
-    if not await is_admin(
-        callback_query.message.chat, await callback_query.bot.get_me()
-    ):
+    if not await is_admin(callback_query.message.chat, callback_query.bot):
         await callback_query.answer("Please make me an admin first.")
         return
 
@@ -34,9 +32,7 @@ async def cancel_mute(
 async def cancel_ban(
     callback_query: types.CallbackQuery, callback_data: BanCallbackData
 ):
-    if not await is_admin(
-        callback_query.message.chat, await callback_query.bot.get_me()
-    ):
+    if not await is_admin(callback_query.message.chat, callback_query.bot):
         await callback_query.answer("Please make me an admin first.")
         return
 
