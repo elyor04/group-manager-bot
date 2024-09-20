@@ -1,14 +1,14 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from database.models import (
+from ..database.models import (
     get_warning_count,
     get_muted_count,
     get_banned_count,
     get_message_count,
 )
-from utils.chatMember import user_status, is_admin
-from utils.extractArgs import extract_args
-from client import client
+from ..utils.chatMember import user_status, is_admin
+from ..utils.extractArgs import extract_args
+from ..client import client
 
 info_template = """
 🆔 <b>ID</b>: <code>{0}</code>

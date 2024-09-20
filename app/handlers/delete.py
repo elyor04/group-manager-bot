@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from utils.chatMember import is_admin
+from ..utils.chatMember import is_admin
 
 
 async def delete_message(message: types.Message):

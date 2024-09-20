@@ -1,5 +1,5 @@
 from aiogram import Dispatcher, types, enums, F
-from utils.chatMember import is_admin
+from ..utils.chatMember import is_admin
 
 message_template = """
 📣 <b>Message has been sent to the group admins</b> 📣

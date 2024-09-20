@@ -1,13 +1,13 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
-from database.models import get_muted_count, set_muted_count
-from utils.chatMember import is_admin, is_muted, is_banned
-from utils.extractArgs import extract_args, get_strtime
-from utils.callbackData import MuteCallbackData
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from ..database.models import get_banned_count, set_banned_count
+from ..utils.chatMember import is_admin, is_banned
+from ..utils.extractArgs import extract_args, get_strtime
+from ..utils.callbackData import BanCallbackData
 
 
-async def mute_user(message: types.Message):
+async def ban_user(message: types.Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -31,11 +31,7 @@ async def mute_user(message: types.Message):
         return
 
     if await is_admin(message.chat, user):
-        await message.reply("You cannot mute an admin.")
-        return
-
-    if await is_muted(message.chat, user):
-        await message.reply("User is already muted.")
+        await message.reply("You cannot ban an admin.")
         return
 
     if await is_banned(message.chat, user):
@@ -44,21 +40,22 @@ async def mute_user(message: types.Message):
 
     await message.delete()
 
-    mute_duration = args_dict["timedelta"]
+    ban_duration = args_dict["timedelta"]
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
 
-    if mute_duration:
-        await message.chat.restrict(
+    if ban_duration:
+        until_date = message.date + ban_duration
+
+        await message.chat.ban(
             user_id=user.id,
-            permissions=ChatPermissions(),
-            until_date=message.date + mute_duration,
+            until_date=until_date,
         )
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="Cancel Mute",
-                        callback_data=MuteCallbackData(
+                        text="Cancel Ban",
+                        callback_data=BanCallbackData(
                             user_id=user.id, action="cancel"
                         ).pack(),
                     )
@@ -66,22 +63,19 @@ async def mute_user(message: types.Message):
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}'
             + reason,
             reply_markup=keyboard,
         )
 
     else:
-        await message.chat.restrict(
-            user_id=user.id,
-            permissions=ChatPermissions(),
-        )
+        await message.chat.ban(user_id=user.id)
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="Cancel Mute",
-                        callback_data=MuteCallbackData(
+                        text="Cancel Ban",
+                        callback_data=BanCallbackData(
                             user_id=user.id, action="cancel"
                         ).pack(),
                     )
@@ -89,18 +83,18 @@ async def mute_user(message: types.Message):
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.'
             + reason,
             reply_markup=keyboard,
         )
 
-    muted_count = get_muted_count(message.chat.id, user.id)
-    set_muted_count(message.chat.id, user.id, muted_count + 1)
+    banned_count = get_banned_count(message.chat.id, user.id)
+    set_banned_count(message.chat.id, user.id, banned_count + 1)
 
 
-def register_mute_handlers(dp: Dispatcher):
+def register_ban_handlers(dp: Dispatcher):
     dp.message.register(
-        mute_user,
-        Command("mute"),
+        ban_user,
+        Command("ban"),
         F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

@@ -1,17 +1,17 @@
 import re
 from aiogram import Dispatcher, types, enums, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
-from database.models import (
+from datetime import timedelta
+from ..database.models import (
     get_warning_count,
     set_warning_count,
     get_muted_count,
     set_muted_count,
 )
-from database.utils import get_bad_words
-from utils.chatMember import is_admin
-from utils.extractArgs import get_strtime
-from datetime import timedelta
-from utils.callbackData import MuteCallbackData
+from ..utils.badWords import get_bad_words
+from ..utils.chatMember import is_admin
+from ..utils.extractArgs import get_strtime
+from ..utils.callbackData import MuteCallbackData
 
 swearing_words = get_bad_words()
 mute_durations = {

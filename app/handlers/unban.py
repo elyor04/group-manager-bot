@@ -1,11 +1,10 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from database.models import get_warning_count, set_warning_count
-from utils.chatMember import is_admin
-from utils.extractArgs import extract_args
+from ..utils.chatMember import is_admin, is_banned
+from ..utils.extractArgs import extract_args
 
 
-async def unwarn_user(message: types.Message):
+async def unban_user(message: types.Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -28,25 +27,21 @@ async def unwarn_user(message: types.Message):
         await message.reply("Please reply to a user or specify a username.")
         return
 
-    chat_id = message.chat.id
-    warning_count = get_warning_count(chat_id, user.id)
-    warning_count -= 1
+    if not await is_banned(message.chat, user):
+        await message.reply("User is not banned.")
+        return
 
-    if warning_count >= 0:
-        await message.delete()
+    await message.delete()
+    await message.chat.unban(user_id=user.id)
 
-        await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unwarned.\nWarns: {warning_count}/5'
-        )
-        set_warning_count(chat_id, user.id, warning_count)
-
-    else:
-        await message.reply("User has no warns.")
+    await message_sender(
+        f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unbanned.'
+    )
 
 
-def register_unwarn_handlers(dp: Dispatcher):
+def register_unban_handlers(dp: Dispatcher):
     dp.message.register(
-        unwarn_user,
-        Command("unwarn"),
+        unban_user,
+        Command("unban"),
         F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
     )

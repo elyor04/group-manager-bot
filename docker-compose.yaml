@@ -5,7 +5,7 @@ services:
     image: python:3.11
     container_name: group-manager-bot-app
     restart: always
-    command: bash appRun.sh
+    command: bash -c "pip3 install -r requirements.txt && python3 main.py"
     working_dir: /app
     volumes:
       - .:/app

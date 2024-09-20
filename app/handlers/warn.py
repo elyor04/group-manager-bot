@@ -1,16 +1,16 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
-from database.models import (
+from datetime import timedelta
+from ..database.models import (
     get_warning_count,
     set_warning_count,
     get_muted_count,
     set_muted_count,
 )
-from utils.chatMember import is_admin, is_muted, is_banned
-from utils.extractArgs import extract_args, get_strtime
-from utils.callbackData import MuteCallbackData
-from datetime import timedelta
+from ..utils.chatMember import is_admin, is_muted, is_banned
+from ..utils.extractArgs import extract_args, get_strtime
+from ..utils.callbackData import MuteCallbackData
 
 mute_durations = {
     3: timedelta(hours=1),

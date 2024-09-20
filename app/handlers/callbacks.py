@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types, F
-from utils.chatMember import is_admin, is_muted, is_banned
-from utils.callbackData import MuteCallbackData, BanCallbackData
+from ..utils.chatMember import is_admin, is_muted, is_banned
+from ..utils.callbackData import MuteCallbackData, BanCallbackData
 
 
 async def cancel_mute(

@@ -1,11 +1,11 @@
 import logging
 import asyncio
 from aiogram import Dispatcher
-from database import initialize_db, close_db
-from handlers import register_handlers
-from middlewares import register_middlewares
-from bot import bot
-from client import client
+from app.database import initialize_db, close_db
+from app.handlers import register_handlers
+from app.middlewares import register_middlewares
+from app.bot import bot
+from app.client import client
 
 
 async def main():

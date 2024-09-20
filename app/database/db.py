@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine, Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from ..config import DB_PATH
 
-engine = create_engine("sqlite:///data/bot_data.db", echo=False)
+engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
 session = sessionmaker(bind=engine)()
 Base = declarative_base()
 

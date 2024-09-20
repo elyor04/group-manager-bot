@@ -1,7 +1,7 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
 from aiogram.enums import ChatMemberStatus
-from utils.extractArgs import get_args
+from ..utils.extractArgs import get_args
 
 allowed_users = {
     # "-1002116123455": [7084938423],
