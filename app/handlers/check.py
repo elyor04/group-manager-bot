@@ -104,7 +104,7 @@ async def check_messages(message: types.Message):
     if args_dict["user"] and (args_dict["user"].type != ChatType.PRIVATE):
         await message.delete()
         await message.answer(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share other chats.'
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share chats.'
         )
         return
 
