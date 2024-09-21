@@ -89,7 +89,9 @@ async def check_messages(message: types.Message):
 
             return
 
-    if re.search(r"http[s]?://\S+", text):
+    if re.search(
+        r"\b(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+\.[a-z]{2,})([^\s]*)\b", text
+    ):
         await message.delete()
         await message.answer(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
