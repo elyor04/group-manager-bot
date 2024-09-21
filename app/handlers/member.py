@@ -1,6 +1,11 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.enums import ChatMemberStatus
 
+welcome_template = """\
+Hello <a href="tg://user?id={0}">{1}</a>, \
+welcome to <a href="https://t.me/c/{2}">{3}</a>\
+"""
+
 
 async def welcome_new_member(update: types.ChatMemberUpdated):
     new_member = update.new_chat_member
@@ -8,13 +13,16 @@ async def welcome_new_member(update: types.ChatMemberUpdated):
 
     if new_member and (new_member.status == ChatMemberStatus.MEMBER):
         user = new_member.user
+        chat = update.chat
 
         if old_member and (
             old_member.status in [ChatMemberStatus.LEFT, ChatMemberStatus.KICKED]
         ):
             await update.bot.send_message(
                 update.chat.id,
-                f'Welcome to the group, <a href="tg://user?id={user.id}">{user.full_name}</a>',
+                welcome_template.format(
+                    user.id, user.full_name, str(chat.id)[4:], chat.title
+                ),
             )
 
 
