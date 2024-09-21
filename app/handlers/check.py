@@ -2,6 +2,7 @@ import re
 from aiogram import Dispatcher, types, enums, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 from datetime import timedelta
+from pyrogram.enums import ChatType
 from ..database.models import (
     get_warning_count,
     set_warning_count,
@@ -10,7 +11,7 @@ from ..database.models import (
 )
 from ..utils.badWords import get_bad_words
 from ..utils.chatMember import is_admin
-from ..utils.extractArgs import get_strtime
+from ..utils.extractArgs import get_strtime, extract_args
 from ..utils.callbackData import MuteCallbackData
 
 swearing_words = get_bad_words()
@@ -95,6 +96,15 @@ async def check_messages(message: types.Message):
         await message.delete()
         await message.answer(
             f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
+        )
+        return
+
+    args_dict = await extract_args(message.text, False)
+
+    if args_dict["user"] and (args_dict["user"].type != ChatType.PRIVATE):
+        await message.delete()
+        await message.answer(
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share other chats.'
         )
         return
 

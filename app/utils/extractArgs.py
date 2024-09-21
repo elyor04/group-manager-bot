@@ -3,13 +3,17 @@ from datetime import timedelta
 from ..client import client
 
 
-async def extract_args(text: str):
+async def extract_args(text: str, use_get_args: bool = True):
     data = {
         "user": None,
         "timedelta": None,
         "reason": None,
     }
-    args_text = get_args(text)
+
+    if use_get_args:
+        args_text = get_args(text)
+    else:
+        args_text = text
 
     if not args_text:
         return data
