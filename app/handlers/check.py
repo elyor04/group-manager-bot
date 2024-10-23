@@ -45,7 +45,9 @@ async def check_messages(message: types.Message):
                     user_id=user.id,
                     permissions=ChatPermissions(),
                 )
-                mute_message = f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been muted forever due to multiple warnings.'
+                mute_message = (
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been muted forever due to multiple warnings.'
+                )
                 set_warning_count(chat.id, user.id, 0)
 
             elif mute_duration:
@@ -63,8 +65,7 @@ async def check_messages(message: types.Message):
 
             else:
                 mute_message = (
-                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been warned.\n'
-                    f"Warns: {warning_count}/3"
+                    f'<a href="tg://user?id={user.id}">{user.full_name}</a> is sending bad words.\nHe/she has been warned.\n' f"Warns: {warning_count}/3"
                 )
                 set_warning_count(chat.id, user.id, warning_count)
 
@@ -73,16 +74,12 @@ async def check_messages(message: types.Message):
                     [
                         InlineKeyboardButton(
                             text="Cancel Mute",
-                            callback_data=MuteCallbackData(
-                                user_id=user.id, action="cancel"
-                            ).pack(),
+                            callback_data=MuteCallbackData(user_id=user.id, action="cancel").pack(),
                         )
                     ]
                 ]
             )
-            await message.answer(
-                mute_message, reply_markup=keyboard if warning_count >= 3 else None
-            )
+            await message.answer(mute_message, reply_markup=keyboard if warning_count >= 3 else None)
 
             if warning_count >= 3:
                 muted_count = get_muted_count(chat.id, user.id) + 1
@@ -91,21 +88,18 @@ async def check_messages(message: types.Message):
             return
 
     if re.search(
-        r"\b(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+\.[a-z]{2,})([^\s]*)\b", text
+        r"\b(?:https?:\/\/)?(?:www\.)?([a-z0-9-]+\.(com|net|org|gov|edu|info|io|co|biz|me|us|uk|ca|de|ru|uz|fr|au|in|jp|cn|nl|br|it|es|pl|kr|mx|se|ch|be|nz))([^\s]*)\b",
+        text,
     ):
         await message.delete()
-        await message.answer(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.'
-        )
+        await message.answer(f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not send links.')
         return
 
     args_dict = await extract_args(message.text, False)
 
     if args_dict["user"] and (args_dict["user"].type != ChatType.PRIVATE):
         await message.delete()
-        await message.answer(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share chats.'
-        )
+        await message.answer(f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share chats.')
         return
 
 
