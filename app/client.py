@@ -3,7 +3,7 @@ from pyrogram.enums import ParseMode
 from .config import API_ID, API_HASH, BOT_TOKEN, DATA_DIR
 
 client = Client(
-    "my_bot",
+    "bot",
     API_ID,
     API_HASH,
     workdir=DATA_DIR,

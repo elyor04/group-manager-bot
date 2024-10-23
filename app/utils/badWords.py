@@ -3,7 +3,7 @@ from ..config import DATA_DIR
 
 
 def get_bad_words():
-    badWordsPath = os.path.join(DATA_DIR, "bad_words.txt")
+    badWordsPath = os.path.join(DATA_DIR, "bad-words.txt")
 
     if not os.path.exists(badWordsPath):
         return []
