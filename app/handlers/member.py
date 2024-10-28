@@ -37,7 +37,7 @@ def register_member_handlers(dp: Dispatcher):
     )
     dp.message.register(
         delete_join_leave_messages,
-        F.content_types.in_(
+        F.content_type.in_(
             [enums.ContentType.NEW_CHAT_MEMBERS, enums.ContentType.LEFT_CHAT_MEMBER]
         ),
         F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
