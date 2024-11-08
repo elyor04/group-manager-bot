@@ -6,6 +6,7 @@ from app.handlers import register_handlers
 from app.middlewares import register_middlewares
 from app.bot import bot
 from app.client import client
+from app.utils.botCommands import commands
 
 
 async def main():
@@ -17,6 +18,7 @@ async def main():
 
     await client.start()
     await bot.delete_webhook(drop_pending_updates=True)
+    await bot.set_my_commands(commands=commands)
     await dp.start_polling(bot)
 
     await client.stop()
