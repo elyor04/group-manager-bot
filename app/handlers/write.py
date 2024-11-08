@@ -1,28 +1,12 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from aiogram.enums import ChatMemberStatus
 from ..utils.extractArgs import get_args
-
-allowed_users = {
-    # "-1002116123455": [7084938423],
-    "all": [1398600688, 6840837015, 7084938423, 1087968824],
-}
+from ..utils.chatMember import is_admin
 
 
 async def write_by_bot(message: types.Message):
-    user_id = message.from_user.id
-    chat_id = str(message.chat.id)
-
-    args_text = get_args(message.text)
-    member = await message.chat.get_member(user_id)
-
-    allowed_ids = allowed_users["all"]
-    allowed_ids.extend(allowed_users.get(chat_id, []))
-
-    if not (
-        args_text
-        and ((user_id in allowed_ids) or (member.status == ChatMemberStatus.CREATOR))
-    ):
+    if not await is_admin(message.chat, message.from_user):
+        await message.reply("You are not an admin of this group.")
         return
 
     if message.reply_to_message:
@@ -30,8 +14,11 @@ async def write_by_bot(message: types.Message):
     else:
         message_sender = message.answer
 
+    args_text = get_args(message.text)
+
     await message.delete()
-    await message_sender(args_text)
+    if args_text:
+        await message_sender(args_text)
 
 
 def register_write_handlers(dp: Dispatcher):
