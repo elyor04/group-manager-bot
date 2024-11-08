@@ -5,6 +5,10 @@ from ..utils.chatMember import is_admin
 
 
 async def write_by_bot(message: types.Message):
+    if not await is_admin(message.chat, message.bot):
+        await message.reply("Please make me an admin first.")
+        return
+
     if not await is_admin(message.chat, message.from_user):
         await message.reply("You are not an admin of this group.")
         return
