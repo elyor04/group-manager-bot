@@ -26,7 +26,7 @@ async def extract_args(text: str, use_get_args: bool = True):
         user_id_match = re.search(r"\b\d{10}\b", args_text)
         timedelta_match = re.findall(r"(\d+)([dhm])", arg_text)
 
-        if username_match:
+        if arg_text.startswith("@") and username_match:
             username = username_match.group(0)
             chat = await client.get_chat(username)
             chat.full_name = f"{chat.first_name or ''} {chat.last_name or ''}".strip()
