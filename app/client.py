@@ -1,6 +1,6 @@
 from pyrogram import Client
 from pyrogram.enums import ParseMode
-from .config import API_ID, API_HASH, BOT_TOKEN, DATA_DIR
+from .utils.config import API_ID, API_HASH, BOT_TOKEN, DATA_DIR
 
 client = Client(
     "bot",

@@ -3,7 +3,7 @@ from aiogram import Dispatcher, types, enums, F
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 from datetime import timedelta
 from pyrogram.enums import ChatType
-from ..database.models import (
+from ..database.utils import (
     get_warning_count,
     set_warning_count,
     get_muted_count,

@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, BaseMiddleware
 from aiogram.types import Message
-from ..database.models import get_message_count, set_message_count
+from ..database.utils import get_message_count, set_message_count
 
 
 class CountMiddleware(BaseMiddleware):

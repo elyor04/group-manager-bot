@@ -1,58 +1,20 @@
-from .db import UserInfo, session
+from sqlalchemy import Column, Integer
+from sqlalchemy.orm import DeclarativeBase
 
 
-def get_user_info(chat_id: int, user_id: int):
-    user_info = (
-        session.query(UserInfo).filter_by(chat_id=chat_id, user_id=user_id).first()
-    )
-
-    if not user_info:
-        user_info = UserInfo(chat_id=chat_id, user_id=user_id)
-        session.add(user_info)
-        session.commit()
-
-    return user_info
+class Base(DeclarativeBase):
+    pass
 
 
-def get_warning_count(chat_id: int, user_id: int) -> int:
-    user_info = get_user_info(chat_id, user_id)
-    return user_info.warnings
+class UserInfo(Base):
+    __tablename__ = "user_info"
 
+    chat_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, primary_key=True)
+    warnings = Column(Integer, default=0)
+    muted = Column(Integer, default=0)
+    banned = Column(Integer, default=0)
+    messages = Column(Integer, default=0)
 
-def set_warning_count(chat_id: int, user_id: int, warnings: int):
-    user_info = get_user_info(chat_id, user_id)
-    user_info.warnings = warnings
-    session.commit()
-
-
-def get_muted_count(chat_id: int, user_id: int) -> int:
-    user_info = get_user_info(chat_id, user_id)
-    return user_info.muted
-
-
-def set_muted_count(chat_id: int, user_id: int, muted: int):
-    user_info = get_user_info(chat_id, user_id)
-    user_info.muted = muted
-    session.commit()
-
-
-def get_banned_count(chat_id: int, user_id: int) -> int:
-    user_info = get_user_info(chat_id, user_id)
-    return user_info.banned
-
-
-def set_banned_count(chat_id: int, user_id: int, banned: int):
-    user_info = get_user_info(chat_id, user_id)
-    user_info.banned = banned
-    session.commit()
-
-
-def get_message_count(chat_id: int, user_id: int) -> int:
-    user_info = get_user_info(chat_id, user_id)
-    return user_info.messages
-
-
-def set_message_count(chat_id: int, user_id: int, messages: int):
-    user_info = get_user_info(chat_id, user_id)
-    user_info.messages = messages
-    session.commit()
+    def __repr__(self):
+        return f"<UserInfo(chat_id={self.chat_id}, user_id={self.user_id})>"

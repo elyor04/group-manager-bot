@@ -1,7 +1,7 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
-from ..database.models import get_muted_count, set_muted_count
+from ..database.utils import get_muted_count, set_muted_count
 from ..utils.chatMember import is_admin, is_muted, is_banned
 from ..utils.extractArgs import extract_args, get_strtime
 from ..utils.callbackData import MuteCallbackData

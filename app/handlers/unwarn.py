@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from ..database.models import get_warning_count, set_warning_count
+from ..database.utils import get_warning_count, set_warning_count
 from ..utils.chatMember import is_admin
 from ..utils.extractArgs import extract_args
 

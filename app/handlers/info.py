@@ -1,6 +1,6 @@
 from aiogram import Dispatcher, types, enums, F
 from aiogram.filters import Command
-from ..database.models import (
+from ..database.utils import (
     get_warning_count,
     get_muted_count,
     get_banned_count,
