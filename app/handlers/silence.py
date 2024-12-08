@@ -28,7 +28,7 @@ async def silence_user(message: types.Message):
         # await message.reply("Please reply to a user or specify a username.")
         return
 
-    if await is_silenced(message.chat.id, user.id):
+    if is_silenced(message.chat.id, user.id):
         # await message.reply("User is already silenced.")
         return
 

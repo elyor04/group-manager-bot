@@ -28,7 +28,7 @@ async def unsilence_user(message: types.Message):
         # await message.reply("Please reply to a user or specify a username.")
         return
 
-    if not await is_silenced(message.chat.id, user.id):
+    if not is_silenced(message.chat.id, user.id):
         # await message.reply("User is not silenced.")
         return
 
