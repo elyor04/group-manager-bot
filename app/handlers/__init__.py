@@ -10,6 +10,8 @@ from .unban import register_unban_handlers
 from .info import register_info_handlers
 from .write import register_write_handlers
 from .delete import register_delete_handlers
+from .silence import register_silence_handlers
+from .unsilence import register_unsilence_handlers
 from .member import register_member_handlers
 from .admin import register_admin_handlers
 from .check import register_check_handlers
@@ -28,6 +30,8 @@ def register_handlers(dp: Dispatcher):
     register_info_handlers(dp)
     register_write_handlers(dp)
     register_delete_handlers(dp)
+    register_silence_handlers(dp)
+    register_unsilence_handlers(dp)
     register_member_handlers(dp)
     register_admin_handlers(dp)
     register_check_handlers(dp)
