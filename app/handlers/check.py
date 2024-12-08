@@ -11,6 +11,7 @@ from ..database.utils import (
 )
 from ..utils.badWords import get_bad_words
 from ..utils.chatMember import is_admin
+from ..utils.silenceMember import is_silenced
 from ..utils.extractArgs import get_strtime, extract_args
 from ..utils.callbackData import MuteCallbackData
 
@@ -101,6 +102,9 @@ async def check_messages(message: types.Message):
         await message.delete()
         await message.answer(f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share chats.')
         return
+
+    if is_silenced(chat.id, user.id):
+        await message.delete()
 
 
 def register_check_handlers(dp: Dispatcher):
