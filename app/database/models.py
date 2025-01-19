@@ -1,20 +1,19 @@
-from sqlalchemy import Column, Integer
-from sqlalchemy.orm import DeclarativeBase
+from tortoise.models import Model
+from tortoise import fields
 
 
-class Base(DeclarativeBase):
-    pass
+class UserInfo(Model):
+    id = fields.IntField(primary_key=True)
 
+    chat_id = fields.IntField()
+    user_id = fields.IntField()
+    warnings = fields.IntField(default=0)
+    muted = fields.IntField(default=0)
+    banned = fields.IntField(default=0)
+    messages = fields.IntField(default=0)
 
-class UserInfo(Base):
-    __tablename__ = "user_info"
-
-    chat_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, primary_key=True)
-    warnings = Column(Integer, default=0)
-    muted = Column(Integer, default=0)
-    banned = Column(Integer, default=0)
-    messages = Column(Integer, default=0)
+    class Meta:
+        table = "UserInfos"
 
     def __repr__(self):
-        return f"<UserInfo(chat_id={self.chat_id}, user_id={self.user_id})>"
+        return f"UserInfo(chat_id={self.chat_id}, user_id={self.user_id})"

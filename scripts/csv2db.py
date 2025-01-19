@@ -3,7 +3,7 @@ import sqlite3
 
 csv_file = "data/sqlite.csv"
 db_file = "data/sqlite.db"
-table_name = "user_info"
+table_name = "UserInfos"
 
 df = pd.read_csv(csv_file)
 conn = sqlite3.connect(db_file)

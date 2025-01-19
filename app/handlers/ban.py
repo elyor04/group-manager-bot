@@ -55,16 +55,13 @@ async def ban_user(message: types.Message):
                 [
                     InlineKeyboardButton(
                         text="Cancel Ban",
-                        callback_data=BanCallbackData(
-                            user_id=user.id, action="cancel"
-                        ).pack(),
+                        callback_data=BanCallbackData(user_id=user.id, action="cancel").pack(),
                     )
                 ]
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}'
-            + reason,
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.\nDuration: {get_strtime(ban_duration)}' + reason,
             reply_markup=keyboard,
         )
 
@@ -75,21 +72,18 @@ async def ban_user(message: types.Message):
                 [
                     InlineKeyboardButton(
                         text="Cancel Ban",
-                        callback_data=BanCallbackData(
-                            user_id=user.id, action="cancel"
-                        ).pack(),
+                        callback_data=BanCallbackData(user_id=user.id, action="cancel").pack(),
                     )
                 ]
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.'
-            + reason,
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been banned.' + reason,
             reply_markup=keyboard,
         )
 
-    banned_count = get_banned_count(message.chat.id, user.id)
-    set_banned_count(message.chat.id, user.id, banned_count + 1)
+    banned_count = await get_banned_count(message.chat.id, user.id)
+    await set_banned_count(message.chat.id, user.id, banned_count + 1)
 
 
 def register_ban_handlers(dp: Dispatcher):

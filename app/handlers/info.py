@@ -54,10 +54,10 @@ async def user_info(message: types.Message):
         user.full_name,
         f"@{user.username}" if user.username else "",
         status.capitalize(),
-        get_message_count(chat.id, user.id),
-        get_warning_count(chat.id, user.id),
-        get_muted_count(chat.id, user.id),
-        get_banned_count(chat.id, user.id),
+        await get_message_count(chat.id, user.id),
+        await get_warning_count(chat.id, user.id),
+        await get_muted_count(chat.id, user.id),
+        await get_banned_count(chat.id, user.id),
         joined_date,
     )
 

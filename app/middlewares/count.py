@@ -8,8 +8,8 @@ class CountMiddleware(BaseMiddleware):
         user = event.from_user
         chat = event.chat
 
-        message_count = get_message_count(chat.id, user.id) + 1
-        set_message_count(chat.id, user.id, message_count)
+        message_count = await get_message_count(chat.id, user.id) + 1
+        await set_message_count(chat.id, user.id, message_count)
 
         return await handler(event, data)
 

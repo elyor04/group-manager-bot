@@ -58,16 +58,13 @@ async def mute_user(message: types.Message):
                 [
                     InlineKeyboardButton(
                         text="Cancel Mute",
-                        callback_data=MuteCallbackData(
-                            user_id=user.id, action="cancel"
-                        ).pack(),
+                        callback_data=MuteCallbackData(user_id=user.id, action="cancel").pack(),
                     )
                 ]
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}'
-            + reason,
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.\nDuration: {get_strtime(mute_duration)}' + reason,
             reply_markup=keyboard,
         )
 
@@ -81,21 +78,18 @@ async def mute_user(message: types.Message):
                 [
                     InlineKeyboardButton(
                         text="Cancel Mute",
-                        callback_data=MuteCallbackData(
-                            user_id=user.id, action="cancel"
-                        ).pack(),
+                        callback_data=MuteCallbackData(user_id=user.id, action="cancel").pack(),
                     )
                 ]
             ]
         )
         await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.'
-            + reason,
+            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been muted.' + reason,
             reply_markup=keyboard,
         )
 
-    muted_count = get_muted_count(message.chat.id, user.id)
-    set_muted_count(message.chat.id, user.id, muted_count + 1)
+    muted_count = await get_muted_count(message.chat.id, user.id)
+    await set_muted_count(message.chat.id, user.id, muted_count + 1)
 
 
 def register_mute_handlers(dp: Dispatcher):

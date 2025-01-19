@@ -1,5 +1,8 @@
-aiogram==3.13.0
+aiogram==3.17.0
 python-dotenv==1.0.1
 Pyrogram==2.0.106
 TgCrypto==1.2.5
-SQLAlchemy==2.0.34
+tortoise-orm==0.23.0
+# aerich==0.8.1
+# tomli_w==1.1.0
+# tomlkit==0.13.2

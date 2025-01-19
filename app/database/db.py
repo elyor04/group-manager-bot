@@ -1,15 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from ..utils.config import DB_PATH
-from .models import Base
-
-engine = create_engine(f"sqlite:///{DB_PATH}", echo=False)
-session = Session(bind=engine)
+from tortoise import Tortoise
+from app.utils.config import TORTOISE_ORM
 
 
-def initialize_db():
-    Base.metadata.create_all(engine)
+async def initialize_db():
+    await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas()
 
 
-def close_db():
-    session.close()
+async def close_db():
+    await Tortoise.close_connections()

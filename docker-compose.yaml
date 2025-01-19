@@ -2,8 +2,8 @@ name: group-manager-bot
 
 services:
   bot-app:
-    image: python:3.11
-    container_name: group-manager-bot-app
+    image: python:3.12
+    container_name: group-manager-bot
     restart: always
     command: bash -c "pip3 install -r requirements.txt && python3 main.py"
     working_dir: /app

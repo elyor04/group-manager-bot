@@ -29,16 +29,14 @@ async def unwarn_user(message: types.Message):
         return
 
     chat_id = message.chat.id
-    warning_count = get_warning_count(chat_id, user.id)
+    warning_count = await get_warning_count(chat_id, user.id)
     warning_count -= 1
 
     if warning_count >= 0:
         await message.delete()
 
-        await message_sender(
-            f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unwarned.\nWarns: {warning_count}/5'
-        )
-        set_warning_count(chat_id, user.id, warning_count)
+        await message_sender(f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unwarned.\nWarns: {warning_count}/5')
+        await set_warning_count(chat_id, user.id, warning_count)
 
     else:
         await message.reply("User has no warns.")

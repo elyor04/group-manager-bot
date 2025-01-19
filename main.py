@@ -1,28 +1,25 @@
 import logging
 import asyncio
-from aiogram import Dispatcher
 from app.database import initialize_db, close_db
 from app.handlers import register_handlers
 from app.middlewares import register_middlewares
-from app.bot import bot
+from app.bot import bot, dp
 from app.client import client
-from app.utils.botCommands import commands
+from app.utils.botCommands import botCommands
 
 
 async def main():
-    dp = Dispatcher()
-
-    initialize_db()
+    await initialize_db()
     register_middlewares(dp)
     register_handlers(dp)
 
     await client.start()
     await bot.delete_webhook(drop_pending_updates=True)
-    await bot.set_my_commands(commands=commands)
+    await bot.set_my_commands(commands=botCommands)
     await dp.start_polling(bot)
 
     await client.stop()
-    close_db()
+    await close_db()
 
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ async def warn_user(message: types.Message):
 
     chat_id = message.chat.id
     user_id = user.id
-    warning_count = get_warning_count(chat_id, user_id) + 1
+    warning_count = await get_warning_count(chat_id, user_id) + 1
 
     mute_duration = mute_durations.get(warning_count)
     reason = "\nReason: " + args_dict["reason"] if args_dict["reason"] else ""
@@ -67,11 +67,8 @@ async def warn_user(message: types.Message):
             user_id=user_id,
             permissions=ChatPermissions(),
         )
-        mute_message = (
-            f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted forever due to multiple warnings.'
-            + reason
-        )
-        set_warning_count(chat_id, user_id, 0)
+        mute_message = f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted forever due to multiple warnings.' + reason
+        await set_warning_count(chat_id, user_id, 0)
 
     elif mute_duration:
         await message.chat.restrict(
@@ -84,34 +81,27 @@ async def warn_user(message: types.Message):
             f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been muted for {get_strtime(mute_duration)}.\n'
             f"Next time will be muted {next_action}.\nWarns: {warning_count}/5" + reason
         )
-        set_warning_count(chat_id, user_id, warning_count)
+        await set_warning_count(chat_id, user_id, warning_count)
 
     else:
-        mute_message = (
-            f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been warned.\n'
-            f"Warns: {warning_count}/3" + reason
-        )
-        set_warning_count(chat_id, user_id, warning_count)
+        mute_message = f'<a href="tg://user?id={user_id}">{user.full_name}</a> has been warned.\n' f"Warns: {warning_count}/3" + reason
+        await set_warning_count(chat_id, user_id, warning_count)
 
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text="Cancel Mute",
-                    callback_data=MuteCallbackData(
-                        user_id=user_id, action="cancel"
-                    ).pack(),
+                    callback_data=MuteCallbackData(user_id=user_id, action="cancel").pack(),
                 )
             ]
         ]
     )
-    await message_sender(
-        mute_message, reply_markup=keyboard if warning_count >= 3 else None
-    )
+    await message_sender(mute_message, reply_markup=keyboard if warning_count >= 3 else None)
 
     if warning_count >= 3:
-        muted_count = get_muted_count(chat_id, user_id) + 1
-        set_muted_count(chat_id, user_id, muted_count)
+        muted_count = await get_muted_count(chat_id, user_id) + 1
+        await set_muted_count(chat_id, user_id, muted_count)
 
 
 def register_warn_handlers(dp: Dispatcher):

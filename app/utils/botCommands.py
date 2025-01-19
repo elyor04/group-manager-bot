@@ -1,6 +1,6 @@
 from aiogram.types import BotCommand
 
-commands = [
+botCommands = [
     BotCommand(command="info", description="Info of a user"),
     BotCommand(command="warn", description="Warn a user"),
     BotCommand(command="mute", description="Mute a user"),
