@@ -1,3 +1,6 @@
+"""
+python -m scripts.csv2db
+"""
 import pandas as pd
 from tortoise import Tortoise, run_async
 from app.database import initialize_db, close_db
