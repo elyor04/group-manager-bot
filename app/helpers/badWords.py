@@ -1,5 +1,5 @@
 import os
-from .config import DATA_DIR
+from app.config import DATA_DIR
 
 
 def get_bad_words():

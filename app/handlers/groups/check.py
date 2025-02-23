@@ -1,19 +1,15 @@
 import re
-from aiogram import Dispatcher, types, enums, F
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 from datetime import timedelta
-from pyrogram.enums import ChatType
-from ..database.utils import (
-    get_warning_count,
-    set_warning_count,
-    get_muted_count,
-    set_muted_count,
-)
-from ..utils.badWords import get_bad_words
-from ..utils.chatMember import is_admin
-from ..utils.silenceMember import is_silenced
-from ..utils.extractArgs import get_strtime, extract_args
-from ..utils.callbackData import MuteCallbackData
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType as AiogramChatType
+from pyrogram.enums import ChatType as PyrogramChatType
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
+from app.database.utils import get_warning_count, set_warning_count, get_muted_count, set_muted_count
+from app.helpers import get_bad_words, is_admin, get_strtime, extract_args
+from app.utils import MuteCallbackData
+
+router = Router()
 
 swearing_words = get_bad_words()
 mute_durations = {
@@ -22,7 +18,11 @@ mute_durations = {
 }
 
 
-async def check_messages(message: types.Message):
+@router.message(
+    F.text,
+    F.chat.type.in_([AiogramChatType.GROUP, AiogramChatType.SUPERGROUP]),
+)
+async def check_messages(message: Message):
     if not await is_admin(message.chat, message.bot):
         return
 
@@ -98,18 +98,7 @@ async def check_messages(message: types.Message):
 
     args_dict = await extract_args(message.text, False)
 
-    if args_dict["user"] and (args_dict["user"].type != ChatType.PRIVATE):
+    if args_dict["user"] and (args_dict["user"].type != PyrogramChatType.PRIVATE):
         await message.delete()
         await message.answer(f'<a href="tg://user?id={user.id}">{user.full_name}</a> do not share chats.')
         return
-
-    if is_silenced(chat.id, user.id):
-        await message.delete()
-
-
-def register_check_handlers(dp: Dispatcher):
-    dp.message.register(
-        check_messages,
-        F.content_type == enums.ContentType.TEXT,
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

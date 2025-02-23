@@ -1,6 +1,6 @@
 from aiogram import Dispatcher
-from .count import register_count_middlewares
+from .count import CountMiddleware
 
 
 def register_middlewares(dp: Dispatcher):
-    register_count_middlewares(dp)
+    dp.message.middleware(CountMiddleware())

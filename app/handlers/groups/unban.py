@@ -1,10 +1,17 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
-from ..utils.chatMember import is_admin, is_banned
-from ..utils.extractArgs import extract_args
+from app.helpers import is_admin, is_banned, extract_args
+
+router = Router()
 
 
-async def unban_user(message: types.Message):
+@router.message(
+    Command("unban"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def unban_user(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -35,13 +42,5 @@ async def unban_user(message: types.Message):
     await message.chat.unban(user_id=user.id)
 
     await message_sender(
-        f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unbanned.'
-    )
-
-
-def register_unban_handlers(dp: Dispatcher):
-    dp.message.register(
-        unban_user,
-        Command("unban"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
+        f'<a href="tg://user?id={user.id}">{user.full_name}</a> has been unbanned.',
     )

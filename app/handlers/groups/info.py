@@ -1,29 +1,20 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
-from ..database.utils import (
-    get_warning_count,
-    get_muted_count,
-    get_banned_count,
-    get_message_count,
+from app.database.utils import get_warning_count, get_muted_count, get_banned_count, get_message_count
+from app.helpers import user_status, is_admin, extract_args
+from app.utils import info_template
+from app.client import client
+
+router = Router()
+
+
+@router.message(
+    Command("info"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
 )
-from ..utils.chatMember import user_status, is_admin
-from ..utils.extractArgs import extract_args
-from ..client import client
-
-info_template = """
-🆔 <b>ID</b>: <code>{0}</code>
-👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
-🌐 <b>Username</b>: {2}
-👀 <b>Status</b>: {3}
-💬 <b>Messages</b>: {4}
-❕ <b>Warns</b>: {5}/5
-🔇 <b>Muted</b>: {6}
-🚷 <b>Banned</b>: {7}
-📅 <b>Joined</b>: {8}
-"""
-
-
-async def user_info(message: types.Message):
+async def user_info(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -62,11 +53,3 @@ async def user_info(message: types.Message):
     )
 
     await message_sender(info)
-
-
-def register_info_handlers(dp: Dispatcher):
-    dp.message.register(
-        user_info,
-        Command("info"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

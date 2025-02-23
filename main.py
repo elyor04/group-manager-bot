@@ -1,11 +1,11 @@
 import logging
 import asyncio
 from app.database import initialize_db, close_db
-from app.handlers import register_handlers
 from app.middlewares import register_middlewares
+from app.handlers import register_handlers
 from app.bot import bot, dp
 from app.client import client
-from app.utils.botCommands import botCommands
+from app.utils import botCommands
 
 
 async def main():

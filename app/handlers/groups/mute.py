@@ -1,13 +1,20 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
-from ..database.utils import get_muted_count, set_muted_count
-from ..utils.chatMember import is_admin, is_muted, is_banned
-from ..utils.extractArgs import extract_args, get_strtime
-from ..utils.callbackData import MuteCallbackData
+from app.database.utils import get_muted_count, set_muted_count
+from app.helpers import is_admin, is_muted, is_banned, extract_args, get_strtime
+from app.utils import MuteCallbackData
+
+router = Router()
 
 
-async def mute_user(message: types.Message):
+@router.message(
+    Command("mute"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def mute_user(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -90,11 +97,3 @@ async def mute_user(message: types.Message):
 
     muted_count = await get_muted_count(message.chat.id, user.id)
     await set_muted_count(message.chat.id, user.id, muted_count + 1)
-
-
-def register_mute_handlers(dp: Dispatcher):
-    dp.message.register(
-        mute_user,
-        Command("mute"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

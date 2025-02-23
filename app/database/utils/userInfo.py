@@ -1,4 +1,4 @@
-from .models import UserInfo
+from app.database.models import UserInfo
 
 
 async def get_user_info(chat_id: int, user_id: int):
@@ -10,7 +10,7 @@ async def get_user_info(chat_id: int, user_id: int):
     return user_info
 
 
-async def get_warning_count(chat_id: int, user_id: int) -> int:
+async def get_warning_count(chat_id: int, user_id: int):
     user_info = await get_user_info(chat_id, user_id)
     return user_info.warnings
 
@@ -21,7 +21,7 @@ async def set_warning_count(chat_id: int, user_id: int, warnings: int):
     await user_info.save()
 
 
-async def get_muted_count(chat_id: int, user_id: int) -> int:
+async def get_muted_count(chat_id: int, user_id: int):
     user_info = await get_user_info(chat_id, user_id)
     return user_info.muted
 
@@ -32,7 +32,7 @@ async def set_muted_count(chat_id: int, user_id: int, muted: int):
     await user_info.save()
 
 
-async def get_banned_count(chat_id: int, user_id: int) -> int:
+async def get_banned_count(chat_id: int, user_id: int):
     user_info = await get_user_info(chat_id, user_id)
     return user_info.banned
 
@@ -43,7 +43,7 @@ async def set_banned_count(chat_id: int, user_id: int, banned: int):
     await user_info.save()
 
 
-async def get_message_count(chat_id: int, user_id: int) -> int:
+async def get_message_count(chat_id: int, user_id: int):
     user_info = await get_user_info(chat_id, user_id)
     return user_info.messages
 

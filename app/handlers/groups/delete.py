@@ -1,9 +1,17 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
-from ..utils.chatMember import is_admin
+from app.helpers import is_admin
+
+router = Router()
 
 
-async def delete_message(message: types.Message):
+@router.message(
+    Command("delete"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def delete_message(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -15,11 +23,3 @@ async def delete_message(message: types.Message):
     await message.delete()
     if message.reply_to_message:
         await message.reply_to_message.delete()
-
-
-def register_delete_handlers(dp: Dispatcher):
-    dp.message.register(
-        delete_message,
-        Command("delete"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

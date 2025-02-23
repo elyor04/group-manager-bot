@@ -1,13 +1,20 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from ..database.utils import get_banned_count, set_banned_count
-from ..utils.chatMember import is_admin, is_banned
-from ..utils.extractArgs import extract_args, get_strtime
-from ..utils.callbackData import BanCallbackData
+from app.database.utils import get_banned_count, set_banned_count
+from app.helpers import is_admin, is_banned, extract_args, get_strtime
+from app.utils import BanCallbackData
+
+router = Router()
 
 
-async def ban_user(message: types.Message):
+@router.message(
+    Command("ban"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def ban_user(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -84,11 +91,3 @@ async def ban_user(message: types.Message):
 
     banned_count = await get_banned_count(message.chat.id, user.id)
     await set_banned_count(message.chat.id, user.id, banned_count + 1)
-
-
-def register_ban_handlers(dp: Dispatcher):
-    dp.message.register(
-        ban_user,
-        Command("ban"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

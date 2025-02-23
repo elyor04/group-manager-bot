@@ -1,11 +1,18 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
-from ..database.utils import get_warning_count, set_warning_count
-from ..utils.chatMember import is_admin
-from ..utils.extractArgs import extract_args
+from app.database.utils import get_warning_count, set_warning_count
+from app.helpers import is_admin, extract_args
+
+router = Router()
 
 
-async def unwarn_user(message: types.Message):
+@router.message(
+    Command("unwarn"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def unwarn_user(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -40,11 +47,3 @@ async def unwarn_user(message: types.Message):
 
     else:
         await message.reply("User has no warns.")
-
-
-def register_unwarn_handlers(dp: Dispatcher):
-    dp.message.register(
-        unwarn_user,
-        Command("unwarn"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

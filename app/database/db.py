@@ -1,5 +1,5 @@
 from tortoise import Tortoise
-from app.utils.config import TORTOISE_ORM
+from app.config import TORTOISE_ORM
 
 
 async def initialize_db():

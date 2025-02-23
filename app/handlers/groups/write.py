@@ -1,10 +1,17 @@
-from aiogram import Dispatcher, types, enums, F
+from aiogram import Router, F
+from aiogram.types import Message
+from aiogram.enums import ChatType
 from aiogram.filters import Command
-from ..utils.extractArgs import get_args
-from ..utils.chatMember import is_admin
+from app.helpers import get_args, is_admin
+
+router = Router()
 
 
-async def write_by_bot(message: types.Message):
+@router.message(
+    Command("write"),
+    F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
+)
+async def write_by_bot(message: Message):
     if not await is_admin(message.chat, message.bot):
         await message.reply("Please make me an admin first.")
         return
@@ -23,11 +30,3 @@ async def write_by_bot(message: types.Message):
     await message.delete()
     if args_text:
         await message_sender(args_text)
-
-
-def register_write_handlers(dp: Dispatcher):
-    dp.message.register(
-        write_by_bot,
-        Command("write"),
-        F.chat.type.in_([enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]),
-    )

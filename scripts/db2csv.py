@@ -1,3 +1,6 @@
+"""
+python -m scripts.db2csv
+"""
 import sqlite3
 import pandas as pd
 

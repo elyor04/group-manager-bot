@@ -1,6 +1,6 @@
 import re
 from datetime import timedelta
-from ..client import client
+from app.client import client
 
 
 async def extract_args(text: str, use_get_args: bool = True):
