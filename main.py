@@ -28,5 +28,7 @@ if __name__ == "__main__":
         datefmt="%Y-%m-%d %H:%M:%S",
         level=logging.INFO,
     )
+    logging.getLogger("aiogram.event").setLevel(logging.WARNING)
+
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
