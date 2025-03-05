@@ -1,10 +1,3 @@
-from .executeQuery import execute_query
-
-from .queries import (
-    get_chat_ids,
-    get_user_ids,
-)
-
 from .userInfo import (
     get_user_info,
     get_warning_count,
@@ -15,4 +8,9 @@ from .userInfo import (
     set_banned_count,
     get_message_count,
     set_message_count,
+)
+from .queries import (
+    execute_query,
+    get_chat_ids,
+    get_user_ids,
 )
