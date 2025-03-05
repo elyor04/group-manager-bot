@@ -26,3 +26,15 @@ welcome_template = """\
 Hello <a href="tg://user?id={0}">{1}</a>, \
 welcome to <a href="https://t.me/c/{2}">{3}</a>\
 """
+
+chat_template = """
+🆔 <b>ID</b>: <code>{0}</code>
+👥 <b>Title</b>: <a href="https://t.me/c/{1}">{2}</a>
+🌐 <b>Username</b>: {3}
+"""
+
+user_template = """
+🆔 <b>ID</b>: <code>{0}</code>
+👱 <b>Name</b>: <a href="tg://user?id={0}">{1}</a>
+🌐 <b>Username</b>: {2}
+"""
