@@ -12,7 +12,7 @@ router = Router()
 
 @router.message(
     Command("chats"),
-    F.from_user & F.from_user.id == 1398600688,
+    F.from_user & (F.from_user.id == 1398600688),
     F.chat.type == ChatType.PRIVATE,
 )
 async def get_chats(message: Message):

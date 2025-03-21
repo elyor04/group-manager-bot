@@ -8,7 +8,7 @@ router = Router()
 
 
 @router.message(
-    F.text and F.text.lower().startswith("@admin"),
+    F.text & F.text.lower().startswith("@admin"),
     F.chat.type.in_([ChatType.GROUP, ChatType.SUPERGROUP]),
 )
 async def send_to_admins(message: Message):

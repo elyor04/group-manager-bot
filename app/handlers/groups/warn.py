@@ -40,7 +40,7 @@ async def warn_user(message: Message):
         message_sender = message.answer
 
     else:
-        await message.reply("Please reply to a user or specify a username.")
+        await message.reply("Please reply to a user's message or specify a username.")
         return
 
     if await is_admin(message.chat, user):
